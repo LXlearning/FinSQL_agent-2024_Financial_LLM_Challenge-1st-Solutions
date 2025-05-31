@@ -1,0 +1,23 @@
+.DS_Store
+
+/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+# Jupyter Notebook Checkpoints
+src/__pycache__/
+data/raw/
+data/ori/
+# 日志文件
+*.log
+log/
+# 环境变量
+.env
+src/.env*
+# 临时文件
+*~
+# VSCode设置
+.vscode/
+
+output/

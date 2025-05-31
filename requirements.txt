@@ -1,0 +1,14 @@
+numpy==1.22.4
+pandas==2.2.3
+openai==1.59.3
+dotenv
+func_timeout
+cpca==0.5.5
+zhipuai
+tqdm
+requests
+fastparquet
+openpyxl
+scipy==1.7.3
+gradio==4.44.1
+python-dotenv

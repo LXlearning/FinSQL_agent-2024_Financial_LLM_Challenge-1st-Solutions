@@ -1,0 +1,16 @@
+{
+    "最新更新": "XXXX年份最新更新的XX数据查询: 示例sql筛选条件为WHERE UpdateTime = (SELECT MAX(UpdateTime) FROM XX WHERE YEAR(EndDate) = 'XXXX')",
+    "行业": "使用公司行业划分表LC_ExgIndustry时，需添加IfPerformed = '1'条件",
+    "季度|季报": "问题中涉及季度报告时，请注意以下条件, 第一季度: InfoSource='第一季报', 第二季度: InfoSource='半年报', 第三季度: InfoSource='第三季报', 第四季度: InfoSource='年度报告'",
+    "股票": "问题中查询股票时，请使用SecuAbbr证券简称, SecuCode证券代码 字段进行回答",
+    "合并报表调整": "合并报表调整后的条件是IfMerged = 1 AND IfAdjusted = 2",
+    "退休": "LC_Staff表中职工退休人数表示的是总退休人数，如果算某年退休了多少人，需要用今年的总退休人数-去年的总退休人数",
+    "资产负债率": "公司的资产负债率需要用 LC_BalanceSheetAll表负债合计TotalLiability/ 资产总计TotalAssets取得，行业的资产负债率可以直接在LC_IndFinIndicators的DebtAssetsRatio字段获得",
+    "CN": "问题中涉及CN时，筛选条件是PEOStatus='CN'",
+    "截至": "问题中涉及截至某日时，筛选条件是DATE(【日期字段】) < '某日'， 然后按日期字段从大到小排序取最大的",
+    "减持": "问题中涉及减持时, 可用LC_TransferPlan增减持计划类别字段TransferPlanType",
+    "PBX": "PBX指瀑布线，用来研究股价的中期走势，M1=4，PBX=(收盘价的M1日指数移动平均+收盘价的(M1*2)日简单移动平均+收盘价的(M1*4)日简单移动平均)/3",
+    "基金": "问基金是哪个时，请去拼接ConstantDB.SecuMain中的SecuAbbr字段进行回答",
+    "回购总金额": "问截至某个时间点的回购总金额时，取距离该时间最近时间的'回购总金额(BuybackMoney)'字段即可"
+}
+    

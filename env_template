@@ -1,0 +1,10 @@
+# 智谱AI API密钥
+ZHIPUAI_API_KEY=""
+# 团队令牌(用于SQL数据库查询)
+TEAM_TOKEN=""
+
+# LLM配置
+## 模型名称
+LLM_model_name='glm-4-plus'
+## 日志文件路径
+log_path='log.log'

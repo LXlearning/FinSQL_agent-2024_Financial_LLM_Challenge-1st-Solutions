@@ -1,0 +1,1094 @@
+[
+    {
+        "question": "600872的全称、A股简称、法人、法律顾问、会计师事务所及董秘是？",
+        "answer": "中炬高新技术实业(集团)股份有限公司（A股简称：中炬高新）的法定代表人为余健华，法律顾问是广东卓建(中山)律师事务所，会计师事务所为天职国际会计师事务所（特殊普通合伙），而董事会秘书则是郭毅航。",
+        "rewritten_question": "600872的全称、A股简称、法人、法律顾问、会计师事务所及董秘是？",
+        "SQL": "SELECT \n    ChiName AS 全称,\n    AShareAbbr AS A股简称,\n    LegalRepr AS 法人,\n    LegalConsultant AS 法律顾问,\n    AccountingFirm AS 会计师事务所,\n    SecretaryBD AS 董秘\nFROM \n    AStockBasicInfoDB.LC_StockArchives\nWHERE \n    CompanyCode = 1805;",
+        "standart_question": "xx股票的全称、A股简称、法人、法律顾问、会计师事务所及董秘是？"
+    },
+    {
+        "question": "今天是2021年12月24日，创近半年新高的股票有几只？",
+        "answer": "今天是2021年12月24日，创近半年新高的股票有18只。",
+        "rewritten_question": "今天是2021年12月24日，创近半年新高的股票有几只？",
+        "SQL": "SELECT COUNT(*) AS 创近半年新高的股票数量\nFROM AStockMarketQuotesDB.CS_StockPatterns\nWHERE IfHighestHPriceRMSix = 1\nAND DATE(TradingDay) = '2021-12-24'",
+        "standart_question": "今天是xx时间，创近半年新高的股票有几只？"
+    },
+    {
+        "question": "哪些股票股价大于75，且同时当天创一年新高的是？",
+        "answer": "中直股份, 伯特利",
+        "rewritten_question": "今天是2021年12月24日，哪些股票股价大于75，且同时当天创一年新高的是？",
+        "SQL": "SELECT B.ChiNameAbbr\nFROM AStockMarketQuotesDB.QT_StockPerformance A\nJOIN ConstantDB.SecuMain B\nON A.InnerCode = B.InnerCode\nWHERE A.InnerCode in (SELECT InnerCode\nFROM AStockMarketQuotesDB.CS_StockPatterns\nWHERE IfHighestHPriceRY = 1\nAND DATE(TradingDay) = '2021-12-23')\nAND DATE(TradingDay) = '2021-12-23'\nAND HighPrice > 75",
+        "standart_question": "今天是xx时间，哪些股票股价大于75，且同时当天创一年新高的是？"
+    },
+    {
+        "question": "以上股票连续两日（今日与昨日）满足上述要求的是？",
+        "answer": "伯特利",
+        "rewritten_question": "今天是2021年12月24日，哪些股票连续两日（今日与昨日）股价大于75且同时创一年新高？",
+        "SQL": "SELECT ChiNameAbbr\nFROM AStockMarketQuotesDB.QT_StockPerformance A\nJOIN ConstantDB.SecuMain B\nON A.InnerCode = B.InnerCode\nWHERE A.InnerCode in (SELECT InnerCode\n                        FROM AStockMarketQuotesDB.CS_StockPatterns\n                        WHERE IfHighestHPriceRY = 1\n                        AND DATE(TradingDay) = '2021-12-24')\nAND DATE(TradingDay) = '2021-12-24'\nAND HighPrice > 75\n# 昨日满足要求\nSELECT ChiNameAbbr\nFROM AStockMarketQuotesDB.QT_StockPerformance A\nJOIN ConstantDB.SecuMain B\nON A.InnerCode = B.InnerCode\nWHERE A.InnerCode in (SELECT InnerCode\n                        FROM AStockMarketQuotesDB.CS_StockPatterns\n                        WHERE IfHighestHPriceRY = 1\n                        AND DATE(TradingDay) = '2021-12-23')\nAND DATE(TradingDay) = '2021-12-23'\nAND HighPrice > 75",
+        "standart_question": "今天是xx时间，哪些股票连续两日（今日与昨日）股价大于75且同时创一年新高？"
+    },
+    {
+        "question": "2019年度（合并）常熟银行的职工总数有多少人？",
+        "answer": "职工总数有6432人",
+        "rewritten_question": "2019年度（合并）常熟银行的职工总数有多少人？",
+        "SQL": "SELECT EmployeeSum\nFROM AStockOperationsDB.LC_Staff A\nLEFT JOIN ConstantDB.SecuMain B\nON A.CompanyCode=B.CompanyCode\nWHERE ChiNameAbbr like '%常熟银行%'\nAND ClassfiedMethod ='9000'\nAND YEAR(EndDate) = '2019'",
+        "standart_question": "2019年度（合并）xx公司的职工总数有多少人？"
+    },
+    {
+        "question": "该公司披露的硕士或研究生学历（及以上）的有多少人？",
+        "answer": "有274人",
+        "rewritten_question": "2019年度（合并）常熟银行披露的硕士或研究生学历（及以上）的职工有多少人？",
+        "SQL": "SELECT EmployeeSum\nFROM AStockOperationsDB.LC_Staff A\nLEFT JOIN ConstantDB.SecuMain B\nON A.CompanyCode=B.CompanyCode\nWHERE B.ChiNameAbbr like '%常熟银行%'\nAND A.TypeName like '研究生及以上学历'\nAND YEAR(EndDate) = '2019'",
+        "standart_question": "2019年度（合并）xx公司披露的硕士或研究生学历（及以上）的职工有多少人？"
+    },
+    {
+        "question": "20201月1日至年底退休了多少人？",
+        "answer": "有22人",
+        "rewritten_question": "2019年度（合并）常熟银行在2020年1月1日至年底期间退休的职工有多少人？",
+        "SQL": "# 2019人数\nSELECT EmployeeSum\nFROM AStockOperationsDB.LC_Staff A\nLEFT JOIN ConstantDB.SecuMain B\nON A.CompanyCode=B.CompanyCode\nWHERE B.ChiNameAbbr like '%常熟银行%'\nAND A.TypeName like '离退人数'\nAND YEAR(EndDate) = '2019'\n# 2020人数\nSELECT EmployeeSum\nFROM AStockOperationsDB.LC_Staff A\nLEFT JOIN ConstantDB.SecuMain B\nON A.CompanyCode=B.CompanyCode\nWHERE B.ChiNameAbbr like '%常熟银行%'\nAND A.TypeName like '离退人数'\nAND YEAR(EndDate) = '2020'",
+        "standart_question": "xx年度（合并）xx公司在xx年1月1日至年底期间退休的职工有多少人？"
+    },
+    {
+        "question": "互联网金融属于科技概念的什么分支？这个概念的英文名称是什么？",
+        "answer": "互联网金融所属科技分支 互联网, 概念的英文名称 Internet Finance",
+        "rewritten_question": "互联网金融属于科技概念的什么分支？这个概念的英文名称是什么？",
+        "SQL": "SELECT SubclassName, ConceptEngName\nFROM AStockIndustryDB.LC_ConceptList\nWHERE ConceptName = '互联网金融';",
+        "standart_question": "互联网金融属于科技概念的什么分支？这个概念的英文名称是什么？"
+    },
+    {
+        "question": "截至2021年底，这个概念有多少只股票（不包含已经调出的）？调出了多少只股票？",
+        "answer": "互联网金融概念股票数量 4, 同期调出互联网金融概念股票数量 0",
+        "rewritten_question": "截至2021年底，互联网金融（Internet Finance）概念下有多少只股票（不包含已经调出的）？同时，有多少只股票被调出？",
+        "SQL": "##总共的股票\nSELECT COUNT(DISTINCT SecuCode) AS TotalStocks\nFROM AStockIndustryDB.LC_COConcept\nJOIN AStockIndustryDB.LC_ConceptList ON LC_COConcept.ConceptCode = LC_ConceptList.ConceptCode\nJOIN ConstantDB.SecuMain ON LC_COConcept.InnerCode = SecuMain.InnerCode\nWHERE LC_ConceptList.ConceptEngName = 'Internet Finance'\nAND (LC_COConcept.OutDate IS NULL OR DATE(LC_COConcept.OutDate) > '2021-12-31')\nAND SecuCategory = 1;\n## 调出的\nSELECT COUNT(DISTINCT SecuCode) AS StocksRemoved\nFROM AStockIndustryDB.LC_COConcept\nJOIN AStockIndustryDB.LC_ConceptList ON LC_COConcept.ConceptCode = LC_ConceptList.ConceptCode\nJOIN ConstantDB.SecuMain ON LC_COConcept.InnerCode = SecuMain.InnerCode\nWHERE LC_ConceptList.ConceptEngName = 'Internet Finance'\nAND DATE(LC_COConcept.OutDate) BETWEEN '2021-01-01' AND '2021-12-31'\nAND SecuCategory = 1;",
+        "standart_question": "截至xx年底，xx概念下有多少只股票（不包含已经调出的）？同时，有多少只股票被调出？"
+    },
+    {
+        "question": "哪些是2020年纳入的，A股简称分别叫什么？",
+        "answer": "2020年纳入互联网金融概念的A股简称 ['湘财股份', '国联证券']",
+        "rewritten_question": "截至2021年底，互联网金融（Internet Finance）概念下，哪些股票是2020年纳入的，它们的A股简称分别是什么？",
+        "SQL": "SELECT SecuMain.SecuCode, SecuMain.SecuAbbr,InDate, SecuMain.ListedDate\nFROM AStockIndustryDB.LC_COConcept\nJOIN ConstantDB.SecuMain ON LC_COConcept.InnerCode = SecuMain.InnerCode\nWHERE LC_COConcept.ConceptCode = 11040004\nAND YEAR(LC_COConcept.InDate) = 2020\nAND SecuMain.SecuCategory = 1",
+        "standart_question": "截至xx年底，xx概念下，哪些股票是xx年纳入的，它们的A股简称分别是什么？"
+    },
+    {
+        "question": "化工纳入过多少个子类概念？",
+        "answer": "化工纳入了91个子类概念。",
+        "rewritten_question": "化工纳入过多少个子类概念？",
+        "SQL": "SELECT COUNT(DISTINCT ConceptName) \nFROM AStockIndustryDB.LC_ConceptList \nWHERE SubclassName = '化工';",
+        "standart_question": "化工纳入过多少个子类概念？"
+    },
+    {
+        "question": "2021年纳入过多少个？分别是？",
+        "answer": "2021年化工行业纳入了4个子类概念，具体包括PTA、PVC、氟化工概念和甲醇。",
+        "rewritten_question": "化工在2021年纳入过多少个子类概念？具体是哪些子类概念？",
+        "SQL": "SELECT COUNT(DISTINCT ConceptName), GROUP_CONCAT(DISTINCT ConceptName) \nFROM AStockIndustryDB.LC_ConceptList \nWHERE SubclassName = '化工' AND YEAR(BeginDate) = '2021';",
+        "standart_question": "化工在xx年纳入过多少个子类概念？具体是哪些子类概念？"
+    },
+    {
+        "question": "2021年纳入的这些概念的股票有多少只？分别属于哪些三级行业（仅考虑2021年新纳入的行业数据）？",
+        "answer": "PTA 3 交换设备,其他石化,包装印刷,涤纶,炼油化工,综合Ⅲ\nPVC 3 氯碱,焦煤,煤炭开采\n氟化工概念 9 其他化学制品,其他化工新材料,化学制剂,半导体材料,无机盐,日用化学产品,氟化工,氟化工及制冷剂,氮肥,煤化工,电池化学品,磷化工及磷酸盐,磷肥,磷肥及磷化工,综合Ⅲ,金属制品,铝\n甲醇 6 其他化学制品,日用化学产品,民爆用品,氟化工,氮肥,火力发电,火电,焦煤,煤化工,煤炭开采,磷肥,磷肥及磷化工,纯碱",
+        "rewritten_question": "化工在2021年纳入的PTA、PVC、氟化工概念和甲醇这4个子类概念中，分别有多少只股票？这些股票分别属于哪些三级行业（仅考虑2021年新纳入的行业数据）？",
+        "SQL": "SELECT A.ConceptName,\n                COUNT(DISTINCT B.InnerCode) AS StockCount,\n                GROUP_CONCAT(DISTINCT D.ThirdIndustryName) AS ThirdIndustryNames\nFROM AStockIndustryDB.LC_ConceptList A\nJOIN AStockIndustryDB.LC_COConcept B\nON A.ConceptCode = B.ConceptCode\nJOIN ConstantDB.SecuMain C\nON B.InnerCode = C.InnerCode\nJOIN AStockIndustryDB.LC_ExgIndustry D\nON C.CompanyCode = D.CompanyCode\nWHERE A.SubclassName = '化工'\nAND A.ConceptName IN ('PTA', 'PVC', '氟化工概念', '甲醇')\nAND YEAR(B.InDate) = 2021\nGROUP BY A.ConceptName;",
+        "standart_question": "化工在xx年纳入的xx、xx、xx和xx这4个子类概念中，分别有多少只股票？这些股票分别属于哪些三级行业（仅考虑xx年新纳入的行业数据）？"
+    },
+    {
+        "question": "天顺风能披露了多少次担保信息？",
+        "answer": "天顺风能披露了44次担保信息。",
+        "rewritten_question": "天顺风能披露了多少次担保信息？",
+        "SQL": "SELECT COUNT(*) AS NumOfGuaranteeDisclosures\nFROM AStockEventsDB.LC_Warrant\nWHERE CompanyCode = 81722",
+        "standart_question": "天顺风能披露了多少次担保信息？"
+    },
+    {
+        "question": "他一共披露过多少次借贷信息？2021年披露了多少次？",
+        "answer": "他一共披露过13次借贷信息，2021年披露了8次。",
+        "rewritten_question": "天顺风能一共披露过多少次借贷信息？2021年披露了多少次借贷信息？",
+        "SQL": "SELECT \n    COUNT(CASE WHEN YEAR(LC_Credit.InfoPublDate) = '2021' THEN 1 END) AS LoanDisclosures2021,\n    COUNT(*) AS TotalLoanDisclosures\nFROM AStockEventsDB.LC_Credit\nWHERE CompanyCode = 81722",
+        "standart_question": "天顺风能一共披露过多少次借贷信息？xx年披露了多少次借贷信息？"
+    },
+    {
+        "question": "他一共披露了多少次重大资产重组信息？2021年披露了多少次？2020年披露了多少次？",
+        "answer": "他一共披露了4次重大资产重组信息；2021年披露了4次；2020年披露了0次。",
+        "rewritten_question": "天顺风能一共披露了多少次重大资产重组信息？2021年披露了多少次重大资产重组信息？2020年披露了多少次重大资产重组信息？",
+        "SQL": "SELECT COUNT(*) AS TotalRegroupDisclosures\nFROM AStockEventsDB.LC_Regroup\nWHERE CompanyCode = 81722;\n# 2021年\nSELECT COUNT(*) AS RegroupDisclosures2021\nFROM AStockEventsDB.LC_Regroup\nWHERE CompanyCode = 81722 AND YEAR(InfoPublDate) = '2021';\n# 2020年\nSELECT COUNT(*) AS RegroupDisclosures2020\nFROM AStockEventsDB.LC_Regroup\nWHERE CompanyCode = 81722 AND YEAR(InfoPublDate) = '2020';",
+        "standart_question": "xx公司一共披露了多少次重大资产重组信息？xx年披露了多少次重大资产重组信息？xx年披露了多少次重大资产重组信息？"
+    },
+    {
+        "question": "天顺风能属于哪个三级行业？",
+        "answer": "天顺风能三级行业 风电零部件",
+        "rewritten_question": "天顺风能属于哪个三级行业？",
+        "SQL": "SELECT ThirdIndustryName\nFROM AStockIndustryDB.LC_ExgIndustry\nWHERE CompanyCode = 81722\nAND Standard = 38\nAND IfPerformed = 1",
+        "standart_question": "天顺风能属于哪个三级行业？"
+    },
+    {
+        "question": "2021年发布的该行业的股票有多少只？",
+        "answer": 14,
+        "rewritten_question": "2021年发布的风电零部件三级行业的股票有多少只？",
+        "SQL": "SELECT count(*) as 风电零部件_2021\nFROM AStockIndustryDB.LC_ExgIndustry\nwhere ThirdIndustryName like '%风电零部件%' and year(InfoPublDate)=2021 and IfPerformed = 1;",
+        "standart_question": "xx年发布的风电零部件三级行业的股票有多少只？"
+    },
+    {
+        "question": "首钢股份发布增发和配股次数分别是多少次？",
+        "answer": "首钢股份增发次数 4, 首钢股份配股次数 0",
+        "rewritten_question": "首钢股份发布增发和配股次数分别是多少次？",
+        "SQL": "# 增发次数\nSELECT COUNT(*) AS IncreaseIssueCount\nFROM AStockFinanceDB.LC_AShareSeasonedNewIssue\nJOIN ConstantDB.SecuMain ON LC_AShareSeasonedNewIssue.InnerCode = SecuMain.InnerCode\nWHERE SecuMain.ChiName = '北京首钢股份有限公司';\n# 配股次数\nSELECT COUNT(*) AS PlacementCount\nFROM AStockFinanceDB.LC_ASharePlacement\nJOIN ConstantDB.SecuMain ON LC_ASharePlacement.InnerCode = SecuMain.InnerCode\nWHERE SecuMain.ChiName = '北京首钢股份有限公司';",
+        "standart_question": "xx公司发布增发和配股次数分别是多少次？"
+    },
+    {
+        "question": "新天绿能2020年年度研发投入合计是多少元？研发人员数量为多少人？（合并报表调整后的，金额保留2位小数）",
+        "answer": "新天绿能2020年年度研发投入合计为48842806.21元，研发人员数量为54人。",
+        "rewritten_question": "新天绿能2020年年度研发投入合计是多少元？研发人员数量为多少人？（合并报表调整后的，金额保留2位小数）",
+        "SQL": "SELECT ROUND(TotalRDInput, 2) AS TotalRDInput,\n               RDStaffNum\nFROM AStockFinanceDB.LC_IntAssetsDetail\nWHERE InnerCode = 199617\nAND YEAR(EndDate) = '2020';",
+        "standart_question": "xx公司xx年年度研发投入合计是多少元？研发人员数量为多少人？（合并报表调整后的，金额保留2位小数）"
+    },
+    {
+        "question": "费用化研发占比为？资本化研发占比为？",
+        "answer": "费用化研发占比是0.75，资本化研发占比是0.25",
+        "rewritten_question": "新天绿能2020年年度研发投入中，费用化研发占比是多少？资本化研发占比是多少？",
+        "SQL": "SELECT \n    ROUND(CapitalizedRDInput / TotalRDInput, 2) AS CapitalizedRatio,\n    ROUND(ExpensedRDInput / TotalRDInput, 2) AS ExpensedRatio\nFROM \n    AStockFinanceDB.LC_IntAssetsDetail\nWHERE \n    CompanyCode = 165649 \n    AND IfMerged = 1 \n    AND YEAR(EndDate) = 2020;",
+        "standart_question": "xx公司xx年年度研发投入中，费用化研发占比是多少？资本化研发占比是多少？"
+    },
+    {
+        "question": "上一年度研发投入最高的三家公司是？（回答中文简称）",
+        "answer": "上海建工、华菱钢铁、均胜电子",
+        "rewritten_question": "新天绿能2020年年度研发投入中，上一年度研发投入最高的三家公司是哪些？（回答中文简称）",
+        "SQL": "SELECT  B.ChiNameAbbr\nFROM AStockFinanceDB.LC_IntAssetsDetail AS A\nJOIN ConstantDB.SecuMain AS B ON A.CompanyCode = B.CompanyCode\nWHERE \n    YEAR(A.EndDate) = '2019'\n    AND A.IfMerged = 1\n    AND IfAdjusted = 2\nORDER BY \n    A.TotalRDInput DESC",
+        "standart_question": "xx公司xx年年度研发投入中，上一年度研发投入最高的三家公司是哪些？（回答中文简称）"
+    },
+    {
+        "question": "000958公司2021年主营业务产品有哪些？（合并报表调整后的，金额保留2位小数）",
+        "answer": "电力销售,商品销售,保险经纪业务,资产管理,利息收入,手续费及佣金,其他产品,合计,保险经纪,手续费及佣金收入,其他",
+        "rewritten_question": "000958公司2021年主营业务产品有哪些？（合并报表调整后的，金额保留2位小数）",
+        "SQL": "SELECT \n    Project AS 主营业务产品,\nFROM AStockFinanceDB.LC_MainOperIncome\nWHERE CompanyCode = 515\nAND YEAR(EndDate) = 2021 \nAND Classification = 20",
+        "standart_question": "xx公司xx年主营业务产品有哪些？（合并报表调整后的，金额保留2位小数）"
+    },
+    {
+        "question": "工商银行的H股代码、中文名称及英文名称分别是？",
+        "answer": "工商银行的H股代码是01398，中文名称是中国工商银行股份有限公司，英文名称是Industrial and Commercial Bank of China Limited",
+        "rewritten_question": "工商银行的H股代码、中文名称及英文名称分别是？",
+        "SQL": "SELECT SecuCode, ChiName, EngName\nFROM ConstantDB.HK_SecuMain\nWHERE ChiName = '中国工商银行股份有限公司';",
+        "standart_question": "xx公司的H股代码、中文名称及英文名称分别是？"
+    },
+    {
+        "question": "该公司的主席及公司邮箱是？",
+        "answer": "该公司主席是廖林，公司邮箱是ir@icbc.com.cn",
+        "rewritten_question": "中国工商银行股份有限公司（Industrial and Commercial Bank of China Limited）的主席及公司邮箱是？",
+        "SQL": "SELECT Chairman, Eail\nFROM HKStockDB.HK_StockArchives\nWHERE CompanyCode = 3037;",
+        "standart_question": "xx公司的主席及公司邮箱是？"
+    },
+    {
+        "question": "该公司2020年12月底披露的变更前后的员工人数为多少人？",
+        "answer": "变更前为434798人，变更后为439787人",
+        "rewritten_question": "中国工商银行股份有限公司（Industrial and Commercial Bank of China Limited）2020年12月底披露的变更前后的员工人数分别是多少人？",
+        "SQL": "SELECT QuaBeforeChange, QuaAfterChange\nFROM HKStockDB.HK_EmployeeChange\nWHERE InnerCode = 1005749 AND YEAR(EffectiveDate) = '2020' AND MONTH(EffectiveDate) = '12';",
+        "standart_question": "xx公司（Industrial and Commercial Bank of China Limited）xx年底披露的变更前后的员工人数分别是多少人？"
+    },
+    {
+        "question": "今天是2020年6月24日，阅文集团近一个月最高价是（保留2位小数）？",
+        "answer": "最高价是56.00",
+        "rewritten_question": "今天是2020年6月24日，阅文集团近一个月最高价是（保留2位小数）？",
+        "SQL": "SELECT HighPriceRM\nFROM HKStockDB.CS_HKStockPerformance\nWHERE InnerCode = 1150048\nAND DATE(TradingDay) = '2020-06-24';",
+        "standart_question": "今天是xx时间，xx公司近一个月最高价是（保留2位小数）？"
+    },
+    {
+        "question": "近一年最低价？",
+        "answer": 22.95,
+        "rewritten_question": "今天是2020年6月24日，阅文集团近一年最低价是多少（保留2位小数）？",
+        "SQL": "SELECT LowPriceRY AS 近一年最低价\nFROM HKStockDB.CS_HKStockPerformance\nWHERE InnerCode = 1150048\nAND DATE(TradingDay) = '2020-06-24';",
+        "standart_question": "今天是xx时间，xx公司近一年最低价是多少（保留2位小数）？"
+    },
+    {
+        "question": "差额是？",
+        "answer": "近一个月最高价为105.00元，近一年最低价为72.95元，因此计算出差额为33.05元。",
+        "rewritten_question": "今天是2020年6月24日，阅文集团近一个月最高价与近一年最低价的差额是多少（保留2位小数）？",
+        "SQL": "SELECT ROUND(HighPriceRM, 2) AS 近一月最高价, LowPriceRY AS 近一年最低价\nFROM HKStockDB.CS_HKStockPerformance\nWHERE InnerCode = 1150048\nAND DATE(TradingDay) = '2020-06-24';",
+        "standart_question": "今天是xx时间，xx公司近一个月最高价与近一年最低价的差额是多少（保留2位小数）？"
+    },
+    {
+        "question": "成交量第3高的是？",
+        "answer": "小米集团-W",
+        "rewritten_question": "今天是2020年10月27日，当日成交量第3高的港股是？",
+        "SQL": "SELECT SecuAbbr\nFROM HKStockDB.CS_HKStockPerformance\nJOIN ConstantDB.HK_SecuMain ON CS_HKStockPerformance.InnerCode = HK_SecuMain.InnerCode\nWHERE DATE(TradingDay) = '2020-10-27'\nORDER BY TurnoverVolume DESC\nLIMIT 2, 1",
+        "standart_question": "今天是xx时间，当日成交量第3高的港股是？"
+    },
+    {
+        "question": "2019-09-02，当日换手率最高的是？",
+        "answer": "2019年9月2日，当日换手率最高的股票是中兴通讯。",
+        "rewritten_question": "2019年9月2日，当日换手率最高的港股是？",
+        "SQL": "SELECT SecuAbbr\nFROM ConstantDB.HK_SecuMain\nJOIN HKStockDB.CS_HKStockPerformance \nON ConstantDB.HK_SecuMain.InnerCode = HKStockDB.CS_HKStockPerformance.InnerCode\nWHERE DATE(TradingDay) = '2019-09-02'\nORDER BY TurnoverRate DESC\nlimit 1",
+        "standart_question": "xx时间，当日换手率最高的港股是？"
+    },
+    {
+        "question": "2021-12-31报告期内，查询总资产最高的公司是?",
+        "answer": "2021-12-31报告期内，总资产最高的公司是重庆农村商业银行股份有限公司，其总资产为1265851070000.0元。",
+        "rewritten_question": "2021-12-31报告期内，查询总资产最高的公司是?",
+        "SQL": "SELECT LC_StockArchives.ChiName, LC_BalanceSheetAll.TotalAssets\nFROM AStockFinanceDB.LC_BalanceSheetAll\nJOIN AStockBasicInfoDB.LC_StockArchives ON LC_BalanceSheetAll.CompanyCode = LC_StockArchives.CompanyCode\nWHERE DATE(LC_BalanceSheetAll.EndDate) = '2021-12-31'\nORDER BY LC_BalanceSheetAll.TotalAssets DESC\nLIMIT 1;",
+        "standart_question": "xx时间报告期内，查询总资产最高的公司是?"
+    },
+    {
+        "question": "经营活动产生的现金流量净额最高的公司是？",
+        "answer": "经营活动产生的现金流量净额最高的公司是重庆农村商业银行股份有限公司，其净额为41228845000.0元。",
+        "rewritten_question": "2021-12-31报告期内，经营活动产生的现金流量净额最高的公司是？",
+        "SQL": "SELECT CompanyCode, NetOperateCashFlow\nFROM AStockFinanceDB.LC_CashFlowStatementAll\nWHERE date(EndDate) = '2021-12-31'\nORDER BY NetOperateCashFlow DESC\nLIMIT 1;",
+        "standart_question": "xx时间报告期内，经营活动产生的现金流量净额最高的公司是？"
+    },
+    {
+        "question": "东航物流的注册邮箱是什么？",
+        "answer": "东航物流的注册邮箱是EAL-IR@ceair.com。",
+        "rewritten_question": "东航物流的注册邮箱是什么？",
+        "SQL": "SELECT Email\nFROM AStockBasicInfoDB.LC_StockArchives\nWHERE CompanyCode = 338255;",
+        "standart_question": "xx公司的注册邮箱是什么？"
+    },
+    {
+        "question": "该公司的实控人是谁？",
+        "answer": "该公司的实控人是中国东方航空集团有限公司。",
+        "rewritten_question": "东航物流的实控人是谁？",
+        "SQL": "SELECT ControllerName\nFROM AStockShareholderDB.LC_ActualController\nWHERE CompanyCode = 338255;",
+        "standart_question": "xx公司的实控人是谁？"
+    },
+    {
+        "question": "航锦科技股份有限公司是否变更过公司名称？",
+        "answer": "未变更过",
+        "rewritten_question": "航锦科技股份有限公司是否变更过公司名称？",
+        "SQL": "SELECT COUNT(*) AS NameChangeCount\nFROM AStockBasicInfoDB.LC_NameChange\nWHERE CompanyCode = 414;",
+        "standart_question": "xx公司是否变更过公司名称？"
+    },
+    {
+        "question": "该公司涉及回购的最大的一笔金额是多少？",
+        "answer": "金额是43951008.0",
+        "rewritten_question": "航锦科技股份有限公司涉及回购的最大一笔金额是多少？",
+        "SQL": "SELECT MAX(BuybackMoney) AS MaxBuybackAmount\nFROM AStockShareholderDB.LC_Buyback\nWHERE CompanyCode = 414;",
+        "standart_question": "xx公司涉及回购的最大一笔金额是多少？"
+    },
+    {
+        "question": "当年公司的技术与生产人员一共有多少人？",
+        "answer": "3804人",
+        "rewritten_question": "航锦科技股份有限公司在2020年涉及回购最大一笔金额为43951008.0元的年度，其技术与生产人员一共有多少人？",
+        "SQL": "SELECT SUM(EmployeeSum) AS TotalTechAndProdEmployees\nFROM AStockOperationsDB.LC_Staff\nWHERE CompanyCode = 414 AND TypeCode IN ('3031', '3035') AND YEAR(EndDate) = 2020;",
+        "standart_question": "xx公司在xx年涉及回购最大一笔金额为43951008.0元的年度，其技术与生产人员一共有多少人？"
+    },
+    {
+        "question": "科达制造2021年8月4日当天的最高价与最低价分别是多少",
+        "answer": "最高价 20.89, 最低价 19.04",
+        "rewritten_question": "科达制造2021年8月4日当天的最高价与最低价分别是多少",
+        "SQL": "SELECT HighPrice, LowPrice\nFROM AStockMarketQuotesDB.QT_StockPerformance\nWHERE InnerCode = 1650 AND DATE(TradingDay) = '2021-08-04';",
+        "standart_question": "xx公司xx时间当天的最高价与最低价分别是多少"
+    },
+    {
+        "question": "该公司所属二级行业当日行业总市值有多少",
+        "answer": "该公司所属的二级行业在2021年8月4日的行业总市值为921810711672.46元。",
+        "rewritten_question": "科达制造2021年8月4日所属的二级行业当日行业总市值是多少？",
+        "SQL": "SELECT SecondIndustryCode, SecondIndustryName, InfoPublDate\nFROM AStockIndustryDB.LC_ExgIndustry\nJOIN ConstantDB.SecuMain ON LC_ExgIndustry.CompanyCode = SecuMain.CompanyCode\nWHERE SecuMain.InnerCode = 1650\n-----\nSELECT TotalMV\nFROM AStockIndustryDB.LC_IndustryValuation\nWHERE Standard = 41 AND IndustryName = '专用设备' AND DATE(TradingDay) = '2021-08-04';",
+        "standart_question": "xx公司xx时间所属的二级行业当日行业总市值是多少？"
+    },
+    {
+        "question": "涪陵榨菜的注册地址在哪？",
+        "answer": "涪陵榨菜的注册地址在重庆市涪陵区江北街道办事处二渡村一组。",
+        "rewritten_question": "涪陵榨菜的注册地址在哪？",
+        "SQL": "SELECT RegAddr\nFROM AStockBasicInfoDB.LC_StockArchives\nWHERE CompanyCode = 81336;",
+        "standart_question": "xx公司的注册地址在哪？"
+    },
+    {
+        "question": "该公司上市公告书中的前十大股东是哪些？",
+        "answer": "前十大股东分别是：重庆市涪陵国有资产投资经营集团有限公司、香港中央结算有限公司、北京建工集团有限责任公司、景顺长城基金管理有限公司、汇添富基金管理股份有限公司、中国工商银行股份有限公司-富国天惠精选成长混合型证券投资基金(LOF)、周斌全、广发基金管理有限公司、全国社保基金一一七组合、中国银行股份有限公司-易方达中小盘混合型证券投资基金。",
+        "rewritten_question": "涪陵榨菜在上市公告书中披露的前十大股东是哪些？",
+        "SQL": "SELECT SHList\nFROM AStockShareholderDB.LC_MainSHListNew\nWHERE CompanyCode = 81336\nAND InfoSource LIKE '%上市公告书%'\nAND InfoTypeCode = 1\nORDER BY SHNo ASC",
+        "standart_question": "xx公司在上市公告书中披露的前十大股东是哪些？"
+    },
+    {
+        "question": "这些股东里有几家是基金管理公司？",
+        "answer": "3家",
+        "rewritten_question": "涪陵榨菜在上市公告书中披露的前十大股东中有几家是基金管理公司？",
+        "SQL": "SELECT COUNT(*) AS FundManagementCompanyCount\nFROM AStockShareholderDB.LC_MainSHListNew A\nJOIN AStockShareholderDB.LC_SHTypeClassifi B\nON A.SHList = B.SHName\nWHERE A.CompanyCode = 81336\nAND A.InfoSource LIKE '%上市公告书%'\nAND A.InfoTypeCode = 1\nAND (B.ThirdLvCode = '2050400' OR B.FourthLvCode = '2050400');",
+        "standart_question": "xx公司在上市公告书中披露的前十大股东中有几家是基金管理公司？"
+    },
+    {
+        "question": "唐山港集团股份有限公司是什么时间上市的（回答XXXX-XX-XX）",
+        "answer": "2010-07-05",
+        "rewritten_question": "唐山港集团股份有限公司是什么时间上市的（回答XXXX-XX-XX）",
+        "SQL": "SELECT ListedDate\nFROM ConstantDB.SecuMain\nWHERE ChiName = '唐山港集团股份有限公司'\"",
+        "standart_question": "xx公司是什么时间上市的（回答XXXX-XX-XX）"
+    },
+    {
+        "question": "当年一共上市了多少家企业？",
+        "answer": "50家企业",
+        "rewritten_question": "2010年一共上市了多少家企业？",
+        "SQL": "SELECT COUNT(*)\nFROM ConstantDB.SecuMain\nWHERE YEAR(ListedDate) = '2010'",
+        "standart_question": "xx年一共上市了多少家企业？"
+    },
+    {
+        "question": "这些企业有多少是在北京注册的？",
+        "answer": "7家企业",
+        "rewritten_question": "2010年上市的50家企业中，有多少家是在北京注册的？",
+        "SQL": "SELECT count(*)\nFROM ConstantDB.SecuMain A\nJOIN AStockBasicInfoDB.LC_StockArchives B\nON A.CompanyCode = B.CompanyCode\nWHERE YEAR(A.ListedDate) = '2010'\nAND B.RegAddr LIKE '%北京%'",
+        "standart_question": "2010年上市的50家企业中，有多少家是在北京注册的？"
+    },
+    {
+        "question": "哪些是注册和办公都在海淀的？",
+        "answer": "2010年上市的50家企业中，注册和办公都在海淀的企业有：北京千方科技股份有限公司、北京大北农科技集团股份有限公司、北京碧水源科技股份有限公司、启明星辰信息技术集团股份有限公司。",
+        "rewritten_question": "2010年上市的50家企业中，哪些企业是注册和办公都在海淀的？",
+        "SQL": "SELECT A.ChiName,RegAddr, OfficeAddr\nFROM ConstantDB.SecuMain A\nJOIN AStockBasicInfoDB.LC_StockArchives B\nON A.CompanyCode = B.CompanyCode\nWHERE YEAR(A.ListedDate) = '2010'\nAND B.RegAddr LIKE '%海淀区%'\nAND B.OfficeAddr LIKE '%海淀区%'",
+        "standart_question": "xx年上市的50家企业中，哪些企业是注册和办公都在海淀的？"
+    },
+    {
+        "question": "山东药玻2020年发布的19年年报的大股东是谁",
+        "answer": "全国社保基金一一五组合",
+        "rewritten_question": "山东药玻2020年发布的19年年报的大股东是谁",
+        "SQL": "SELECT MSHName, MSHNumber\nFROM AStockShareholderDB.LC_Mshareholder\nWHERE CompanyCode = (SELECT CompanyCode FROM ConstantDB.SecuMain WHERE ChiNameAbbr = '山东药玻')\nAND YEAR(InfoPublDate) = 2020\nAND InfoSource = '年度报告'",
+        "standart_question": "xx公司xx年发布的xx年年报的大股东是谁"
+    },
+    {
+        "question": "19年一共有多少户股东？",
+        "answer": 10807,
+        "rewritten_question": "山东药玻2020年发布的19年年报中，一共有多少户股东？",
+        "SQL": "SELECT InfoPublDate, SHNum\nFROM AStockShareholderDB.LC_SHNumber\nWHERE CompanyCode = (SELECT CompanyCode FROM ConstantDB.SecuMain WHERE ChiNameAbbr = '山东药玻')\nAND YEAR(EndDate) = 2019\nAND InfoSource = '年度报告'",
+        "standart_question": "xx公司xx年发布的xx年年报中，一共有多少户股东？"
+    },
+    {
+        "question": "他的流通股本有多少股？",
+        "answer": "594967747股",
+        "rewritten_question": "山东药玻2020年发布的19年年报中，流通股本有多少股？",
+        "SQL": "SELECT FloatShare, InfoSource,EndDate\nFROM AStockShareholderDB.LC_ShareStru\nWHERE CompanyCode = (SELECT CompanyCode FROM ConstantDB.SecuMain WHERE ChiNameAbbr = '山东药玻')\nAND YEAR(EndDate) = 2019\nAND InfoSource = '年度报告'",
+        "standart_question": "xx公司xx年发布的xx年年报中，流通股本有多少股？"
+    },
+    {
+        "question": "19年的股权变动中涉及股数量最大的一次非专场大宗交易是在哪天正式变动的？（时间回答XXXX-XX-XX）",
+        "answer": "2019-12-26",
+        "rewritten_question": "山东药玻2020年发布的19年年报中，涉及股数量最大的一次非专场大宗交易是在哪天正式变动的？（时间回答XXXX-XX-XX）",
+        "SQL": "SELECT TranDate, TranMode, InvolvedSum, IfSPBlockTradeCode\nFROM AStockShareholderDB.LC_ShareTransfer\nWHERE CompanyCode = 1469\n  AND YEAR(TranDate) = '2019'\n  AND IfSPBlockTrade = '否'\nORDER BY InvolvedSum DESC",
+        "standart_question": "xx公司xx年发布的xx年年报中，涉及股数量最大的一次非专场大宗交易是在哪天正式变动的？（时间回答XXXX-XX-XX）"
+    },
+    {
+        "question": "中南出版传媒集团股份有限公司的证券代码是多少？",
+        "answer": "中南出版传媒集团股份有限公司的证券代码是601098。",
+        "rewritten_question": "中南出版传媒集团股份有限公司的证券代码是多少？",
+        "SQL": "SELECT SecuCode\nFROM ConstantDB.SecuMain\nWHERE CompanyCode = 80194;",
+        "standart_question": "xx公司的证券代码是多少？"
+    },
+    {
+        "question": "该公司2019年母公司一季报中预付款项是多少？",
+        "answer": "24040216.48元",
+        "rewritten_question": "中南出版传媒集团股份有限公司（证券代码601098）2019年母公司一季报中预付款项是多少？",
+        "SQL": "SELECT AdvancePayment\nFROM AStockFinanceDB.LC_BalanceSheetAll \nWHERE CompanyCode = 80194 \nAND YEAR(EndDate) = '2019' \nAND MONTH(EndDate) = '3'\nAND IfMerged = '2'",
+        "standart_question": "xx公司（证券代码xx股票）XX年母公司一季报中预付款项是多少？"
+    },
+    {
+        "question": "总营收呢？",
+        "answer": "301809067.14元。",
+        "rewritten_question": "中南出版传媒集团股份有限公司（证券代码601098）2019年母公司一季报中的总营收是多少？",
+        "SQL": "SELECT TotalOperatingRevenue\nFROM AStockFinanceDB.LC_IncomeStatementAll\nWHERE CompanyCode = 80194 \nAND YEAR(EndDate) = '2019' \nAND MONTH(EndDate) = '3'\nAND IfMerged = '2'",
+        "standart_question": "xx公司（证券代码xx股票）XX年母公司一季报中的总营收是多少？"
+    },
+    {
+        "question": "经营活动现金流入了多少？",
+        "answer": "235176468.11元。",
+        "rewritten_question": "中南出版传媒集团股份有限公司（证券代码601098）2019年母公司一季报中的经营活动现金流入是多少？",
+        "SQL": "SELECT SubtotalOperateCashInflow, IfAdjusted\nFROM AStockFinanceDB.LC_CashFlowStatementAll\nWHERE CompanyCode = 80194 \nAND YEAR(EndDate) = '2019' \nAND MONTH(EndDate) = '3'\nAND IfMerged = '2'",
+        "standart_question": "xx公司（证券代码xx股票）XX年母公司一季报中的经营活动现金流入是多少？"
+    },
+    {
+        "question": "000932的英文名称是什么？",
+        "answer": "000932的英文名称是Hunan Valin Steel Co., Ltd.",
+        "rewritten_question": "000932的英文名称是什么？",
+        "SQL": "SELECT EngName\nFROM ConstantDB.SecuMain\nWHERE SecuCode = '000932';",
+        "standart_question": "xx股票的英文名称是什么？"
+    },
+    {
+        "question": "该公司20年的年报中前三高管薪资是多少？",
+        "answer": "该公司2020年年报中前三高管的薪资总额为1772200.0元。",
+        "rewritten_question": "Hunan Valin Steel Co., Ltd.在2020年年报中前三高管的薪资是多少？",
+        "SQL": "SELECT High3Managers\nFROM AStockOperationsDB.LC_RewardStat \nWHERE CompanyCode = 499 \nAND YEAR(EndDate) = '2020';",
+        "standart_question": "xx公司在xx年年报中前三高管的薪资是多少？"
+    },
+    {
+        "question": "当年该公司是否成功资产重组？(回答是或者否)",
+        "answer": "是",
+        "rewritten_question": "Hunan Valin Steel Co., Ltd.在2020年是否成功进行了资产重组？(回答是或者否)",
+        "SQL": "SELECT count(*)\nFROM AStockEventsDB.LC_Regroup \nWHERE CompanyCode = 499 \nAND YEAR(InfoPublDate) = '2020'",
+        "standart_question": "xx公司在xx年是否成功进行了资产重组？(回答是或者否)"
+    },
+    {
+        "question": "RXW中文全称是什么？",
+        "answer": "RXW的中文全称是瑞芯微电子股份有限公司。",
+        "rewritten_question": "RXW中文全称是什么？",
+        "SQL": "SELECT ChiName\nFROM ConstantDB.SecuMain\nWHERE ChiSpelling = 'RXW';",
+        "standart_question": "RXW中文全称是什么？"
+    },
+    {
+        "question": "该公司上市时一共配售了多少张股？",
+        "answer": "瑞芯微电子股份有限公司上市时配售的股份数量为4200000.0张。",
+        "rewritten_question": "瑞芯微电子股份有限公司上市时一共配售了多少张股？",
+        "SQL": "SELECT DistributionSum\nFROM AStockShareholderDB.LC_LegalDistribution\nWHERE InnerCode = 85470 AND DistributionReason = '2';",
+        "standart_question": "xx公司上市时一共配售了多少张股？"
+    },
+    {
+        "question": "21年该公司的研发投入是多少？",
+        "answer": "254637256.23元。",
+        "rewritten_question": "瑞芯微电子股份有限公司21年的研发投入是多少？",
+        "SQL": "SELECT TotalRDInput, InfoSourceCode\nFROM AStockFinanceDB.LC_IntAssetsDetail\nWHERE CompanyCode = 232006 AND YEAR(InfoPublDate) = 2021\nAND InfoSourceCode = 110102",
+        "standart_question": "xx公司xx年的研发投入是多少？"
+    },
+    {
+        "question": "Titan Wind Energy (Suzhou) Co.,Ltd.董秘是谁",
+        "answer": "Titan Wind Energy (Suzhou) Co.,Ltd.的董秘是朱彬。",
+        "rewritten_question": "Titan Wind Energy (Suzhou) Co.,Ltd.董秘是谁",
+        "SQL": "SELECT SecretaryBD\nFROM AStockBasicInfoDB.LC_StockArchives\nWHERE CompanyCode = 81722;",
+        "standart_question": "xx公司董秘是谁"
+    },
+    {
+        "question": "东兴证券2019年一共成功为多少家公司提供过担保？",
+        "answer": "1家",
+        "rewritten_question": "东兴证券2019年一共成功为多少家公司提供过担保？",
+        "SQL": "SELECT COUNT(DISTINCT SecuredParty) AS NumOfCompanies\nFROM AStockEventsDB.LC_Warrant\nWHERE CompanyCode = 74956\nAND YEAR(InfoPublDate) = '2019'\nAND ActionWays IN ('1201', '1205')",
+        "standart_question": "xx公司xx年一共成功为多少家公司提供过担保？"
+    },
+    {
+        "question": "这些担保项目中担保最多的金额是多少？",
+        "answer": "金额是400000000.0",
+        "rewritten_question": "东兴证券2019年成功提供的担保项目中，担保最多的金额是多少？",
+        "SQL": "SELECT FirstGuaranteeSum\nFROM AStockEventsDB.LC_Warrant\nWHERE CompanyCode = 74956\nAND YEAR(InfoPublDate) = '2019'",
+        "standart_question": "xx公司xx年成功提供的担保项目中，担保最多的金额是多少？"
+    },
+    {
+        "question": "当年该公司有多少起合同纠纷？",
+        "answer": "2起",
+        "rewritten_question": "东兴证券2019年有多少起合同纠纷？",
+        "SQL": "SELECT COUNT(*) AS NumOfContractDisputes\nFROM AStockEventsDB.LC_SuitArbitration\nWHERE CompanyCode = 74956\nAND YEAR(InfoPublDate) = '2019'\nAND SubjectMatterStat = \"合同纠纷\"\n# AND SubjectMatter = '3';",
+        "standart_question": "xx公司xx年有多少起合同纠纷？"
+    },
+    {
+        "question": "这支基金的管理人法人是谁？",
+        "answer": "管理人法人是刘晓艳。",
+        "rewritten_question": "基金代码为009292的基金的管理人法人是谁？",
+        "SQL": "SELECT MF_InvestAdvisorOutline.LegalRepr\nFROM PublicFundDB.MF_FundArchives\nJOIN PublicFundDB.MF_InvestAdvisorOutline ON MF_FundArchives.InvestAdvisorCode = MF_InvestAdvisorOutline.InvestAdvisorCode\nWHERE MF_FundArchives.SecurityCode = '009292' AND MF_FundArchives.Manager = '李一硕';",
+        "standart_question": "基金代码为xx基金的基金的管理人法人是谁？"
+    },
+    {
+        "question": "2019年12月12日哪家证券公司受到了处罚",
+        "answer": "西南证券股份有限公司, 山西兰花科技创业股份有限公司伯方煤矿分公司, 重庆大足红蝶锶业有限公司",
+        "rewritten_question": "2019年12月12日哪家证券公司受到了处罚",
+        "SQL": "SELECT PartyName, PartyCode, BeginDate\nFROM CreditDB.LC_ViolatiParty\nWHERE DATE(BeginDate) = '2019-12-12'",
+        "standart_question": "xx时间哪家证券公司受到了处罚"
+    },
+    {
+        "question": "他是多少家公司的股东？",
+        "answer": "西南证券股份有限公司是2家公司的股东。",
+        "rewritten_question": "2019年12月12日受到处罚的西南证券股份有限公司是多少家公司的股东？",
+        "SQL": "SELECT SHList, COUNT(DISTINCT CompanyCode) AS CompanyCount\nFROM AStockShareholderDB.LC_MainSHListNew\nWHERE SHList IN ('西南证券股份有限公司', '山西兰花科技创业股份有限公司伯方煤矿分公司', '重庆大足红蝶锶业有限公司')\nGROUP BY SHList",
+        "standart_question": "xx时间受到处罚的xx公司是多少家公司的股东？"
+    },
+    {
+        "question": "深桑达最近一次停牌是什么时候？（时间回答XXXX-XX-XX）",
+        "answer": "深桑达最近一次停牌的时间是2021-02-26。",
+        "rewritten_question": "深桑达最近一次停牌是什么时候？（时间回答XXXX-XX-XX）",
+        "SQL": "SELECT MAX(SuspendDate) AS LastSuspendDate\nFROM AStockMarketQuotesDB.LC_SuspendResumption\nWHERE InnerCode IN (\n    SELECT InnerCode\n    FROM ConstantDB.SecuMain\n    WHERE ChiNameAbbr = '深桑达'\n)",
+        "standart_question": "深桑达最近一次停牌是什么时候？（时间回答XX时间）"
+    },
+    {
+        "question": "当日哪家公司收盘价最高，最高价是多少？",
+        "answer": "厦门吉比特网络技术股份有限公司 收盘价312.06元，最高价324.47",
+        "rewritten_question": "2021年2月26日，哪家公司收盘价最高，最高价是多少？",
+        "SQL": "SELECT A.ChiName, B.ClosePrice, B.HighPrice\nFROM ConstantDB.SecuMain A\nJOIN AStockMarketQuotesDB.QT_StockPerformance B \nON A.InnerCode = B.InnerCode\nWHERE date(B.TradingDay) = '2021-02-26'\nORDER BY B.ClosePrice DESC\nLIMIT 1;",
+        "standart_question": "xx时间，哪家公司收盘价最高，最高价是多少？"
+    },
+    {
+        "question": "山东国瓷功能材料股份有限公司2021年9月23日开盘价是多少？",
+        "answer": "41.12元",
+        "rewritten_question": "山东国瓷功能材料股份有限公司2021年9月23日开盘价是多少？",
+        "SQL": "SELECT OpenPrice\nFROM AStockMarketQuotesDB.QT_StockPerformance\nWHERE InnerCode = 14953 AND DATE(TradingDay) = '2021-09-23';",
+        "standart_question": "xx公司xx时间开盘价是多少？"
+    },
+    {
+        "question": "当天，外资占股多少？",
+        "answer": 28.37,
+        "rewritten_question": "山东国瓷功能材料股份有限公司2021年9月23日外资占股比例是多少？",
+        "SQL": "SELECT ForeignHoldProp\nFROM AStockShareholderDB.CS_ForeignHoldingSt\nWHERE InnerCode = 14953 AND DATE(TradingDay) = '2021-09-23';",
+        "standart_question": "xx公司xx时间外资占股比例是多少？"
+    },
+    {
+        "question": "北京国枫律师事务所2020年见证多少家公司的年度股东大会？",
+        "answer": "21家",
+        "rewritten_question": "北京国枫律师事务所2020年见证多少家公司的年度股东大会？",
+        "SQL": "SELECT A.CompanyCode, A.MeetingType, MeetingDate, InitialInfoPublDate,InsertTime,AnounceDate, Year\nFROM AStockShareholderDB.LC_SMAttendInfo A\nWHERE A.TestmonyLawOffice = '北京国枫律师事务所'\nAND A.MeetingType = 1\nAND Year = 2020;",
+        "standart_question": "xx公司xx年见证多少家公司的年度股东大会？"
+    },
+    {
+        "question": "天弘沪深300ETF联接A基金的管理经理是谁？",
+        "answer": "高阳",
+        "rewritten_question": "天弘沪深300ETF联接A基金的管理经理是谁？",
+        "SQL": "SELECT GeneralManager\nFROM PublicFundDB.MF_InvestAdvisorOutline\nWHERE InvestAdvisorName = '天弘基金管理有限公司';",
+        "standart_question": "天弘沪深300ETF联接A基金的管理经理是谁？"
+    },
+    {
+        "question": "携程网这家公司电话是多少？",
+        "answer": "携程网这家公司的电话是86.21.3406.4880。",
+        "rewritten_question": "携程网这家公司电话是多少？",
+        "SQL": "SELECT PEOTel\nFROM USStockDB.US_CompanyInfo\nWHERE CompanyCode = 86226505;",
+        "standart_question": "xx公司这家公司电话是多少？"
+    },
+    {
+        "question": "他是什么时候成立的？（时间回答XXXX-XX-XX）",
+        "answer": "携程集团有限公司的成立时间是1999-01-01",
+        "rewritten_question": "携程网这家公司是什么时候成立的？（时间回答XXXX-XX-XX）",
+        "SQL": "SELECT EstablishmentDate\nFROM USStockDB.US_CompanyInfo\nWHERE CompanyCode = 86226505;",
+        "standart_question": "xx公司是什么时候成立的？（时间回答XXXX-XX-XX）"
+    },
+    {
+        "question": "比特矿业这家公司邮编多少？",
+        "answer": 44306,
+        "rewritten_question": "比特矿业这家公司邮编多少？",
+        "SQL": "SELECT PEOZip\nFROM USStockDB.US_CompanyInfo\nWHERE ChiName = '比特矿业有限公司';",
+        "standart_question": "xx公司这家公司邮编多少？"
+    },
+    {
+        "question": "上市了多少年",
+        "answer": "11年",
+        "rewritten_question": "比特矿业有限公司自成立以来上市了多少年？",
+        "SQL": "SELECT YEAR(CURRENT_DATE) - YEAR(ListedDate) AS YearsSinceListing\nFROM ConstantDB.US_SecuMain\nWHERE ChiName = '比特矿业有限公司';",
+        "standart_question": "xx公司自成立以来上市了多少年？"
+    },
+    {
+        "question": "TOUR他是否已经退市了？（是或者否）",
+        "answer": "否",
+        "rewritten_question": "TOUR他是否已经退市了？（是或者否）",
+        "SQL": "SELECT ListedState\nFROM ConstantDB.US_SecuMain\nWHERE CompanyCode = 631203;",
+        "standart_question": "TOUR他是否已经退市了？（是或者否）"
+    },
+    {
+        "question": "这家公司19年最高收盘价是多少",
+        "answer": 5.79,
+        "rewritten_question": "TOUR（途牛）在2019年的最高收盘价是多少？",
+        "SQL": "SELECT MAX(Close) AS MaxClosePrice\nFROM USStockDB.US_DailyQuote\nWHERE InnerCode = 7000593 AND YEAR(TradingDay) = '2019';",
+        "standart_question": "xx公司在xx年的最高收盘价是多少？"
+    },
+    {
+        "question": "南方基金管理股份有限公司在19年成立了多少支基金？",
+        "answer": "南方基金管理股份有限公司在2019年成立了17支基金。",
+        "rewritten_question": "南方基金管理股份有限公司在19年成立了多少支基金？",
+        "SQL": "SELECT COUNT(*) \nFROM PublicFundDB.MF_FundArchives \nWHERE InvestAdvisorCode = 41510 \nAND YEAR(EstablishmentDate) = '2019';",
+        "standart_question": "xx公司在xx年成立了多少支基金？"
+    },
+    {
+        "question": "铜陵有色金属集团股份有限公司的法人代表是谁？",
+        "answer": "铜陵有色金属集团股份有限公司的法人代表是龚华东。",
+        "rewritten_question": "铜陵有色金属集团股份有限公司的法人代表是谁？",
+        "SQL": "SELECT LegalRepr\nFROM AStockBasicInfoDB.LC_StockArchives\nWHERE CompanyCode = 268;",
+        "standart_question": "xx公司的法人代表是谁？"
+    },
+    {
+        "question": "深科技的信披网址是哪个网站?",
+        "answer": "网址是http://www.szse.cn",
+        "rewritten_question": "深科技的信披网址是哪个网站?",
+        "SQL": "SELECT DisclosureWebsites\nFROM AStockBasicInfoDB.LC_StockArchives\nWHERE CompanyCode = 44;",
+        "standart_question": "xx公司的信披网址是哪个网站?"
+    },
+    {
+        "question": "该公司在过去的进行了几次非公开增发",
+        "answer": "1次",
+        "rewritten_question": "深科技在过去的进行了几次非公开增发？",
+        "SQL": "SELECT COUNT(DISTINCT LC_AShareSeasonedNewIssue.IssueType)\nFROM AStockFinanceDB.LC_AShareSeasonedNewIssue\nJOIN ConstantDB.SecuMain ON LC_AShareSeasonedNewIssue.InnerCode = SecuMain.InnerCode\nWHERE SecuMain.CompanyCode = 44 AND LC_AShareSeasonedNewIssue.IssueType = 21;",
+        "standart_question": "xx公司在过去的进行了几次非公开增发？"
+    },
+    {
+        "question": "最近一次非公开增发的数量是多少？",
+        "answer": "是89328225.0",
+        "rewritten_question": "深科技最近一次非公开增发的数量是多少？",
+        "SQL": "SELECT LC_AShareSeasonedNewIssue.IssueVol\nFROM AStockFinanceDB.LC_AShareSeasonedNewIssue\nJOIN ConstantDB.SecuMain ON LC_AShareSeasonedNewIssue.InnerCode = SecuMain.InnerCode\nWHERE SecuMain.CompanyCode = 44 AND LC_AShareSeasonedNewIssue.IssueType = 21\nORDER BY LC_AShareSeasonedNewIssue.NewShareListDate DESC\nLIMIT 1;",
+        "standart_question": "深科技最近一次非公开增发的数量是多少？"
+    },
+    {
+        "question": "福建坤彩材料科技股份有限公司的注册地在哪个省份？",
+        "answer": "福建省福州市元洪投资区(城头)",
+        "rewritten_question": "福建坤彩材料科技股份有限公司的注册地在哪个省份？",
+        "SQL": "SELECT RegAddr\nFROM AStockBasicInfoDB.LC_StockArchives\nWHERE CompanyCode = 206506;",
+        "standart_question": "xx公司的注册地在哪个省份？"
+    },
+    {
+        "question": "该公司2020年年度报告中，未调整的合并资产负债表中提到的资产总计是多少？",
+        "answer": "是2268038398.08",
+        "rewritten_question": "福建坤彩材料科技股份有限公司2020年年度报告中，未调整的合并资产负债表中提到的资产总计是多少？",
+        "SQL": "SELECT TotalAssets\nFROM AStockFinanceDB.LC_BalanceSheetAll\nWHERE CompanyCode = 206506\nAND InfoSource = '年度报告'\nAND IfMerged = 1\nAND IfAdjusted=2\nAND YEAR(EndDate) = 2020;",
+        "standart_question": "xx公司xx年年度报告中，未调整的合并资产负债表中提到的资产总计是多少？"
+    },
+    {
+        "question": "他的2020年年度报告中，未调整的母公司资产负债表显示的负债合计是多少？",
+        "answer": "福建坤彩材料科技股份有限公司2020年年度报告中，未调整的母公司资产负债表显示的负债合计是432424530.79。",
+        "rewritten_question": "福建坤彩材料科技股份有限公司2020年年度报告中，未调整的母公司资产负债表显示的负债合计是多少？",
+        "SQL": "SELECT TotalLiability\nFROM AStockFinanceDB.LC_BalanceSheetAll\nWHERE CompanyCode = 206506\nAND InfoSource = '年度报告'\nAND IfMerged = 2\nAND IfAdjusted=2\nAND YEAR(EndDate) = 2020;",
+        "standart_question": "xx公司xx年年度报告中，未调整的母公司资产负债表显示的负债合计是多少？"
+    },
+    {
+        "question": "海信视像科技股份有限公司在什么时候成立的，XXXX-XX-XX？",
+        "answer": "海信视像科技股份有限公司的成立时间为1997-04-17。",
+        "rewritten_question": "海信视像科技股份有限公司在什么时候成立的，XXXX-XX-XX？",
+        "SQL": "SELECT EstablishmentDate\nFROM AStockBasicInfoDB.LC_StockArchives\nWHERE CompanyCode = 1070;",
+        "standart_question": "xx公司在什么时候成立的，XX时间？"
+    },
+    {
+        "question": "该公司在2021年的半年度报告中未调整的**合并报表**营业总成本是多少？",
+        "answer": "是20583871578.58",
+        "rewritten_question": "海信视像科技股份有限公司在2021年半年度报告中未调整的合并报表营业总成本是多少？",
+        "SQL": "SELECT TotalOperatingCost\nFROM AStockFinanceDB.LC_IncomeStatementAll\nWHERE CompanyCode = 1070\nAND InfoSource = '半年度报告'\nAND IfMerged = '1'\nAND IfAdjusted = 2\nAND date(InfoPublDate) BETWEEN '2021-01-01' AND '2021-12-31';",
+        "standart_question": "xx公司在xx年半年度报告中未调整的合并报表营业总成本是多少？"
+    },
+    {
+        "question": "该公司在2021年的半年度报告中未调整的**合并报表**净利润是多少？",
+        "answer": "是592975419.31",
+        "rewritten_question": "海信视像科技股份有限公司在2021年半年度报告中未调整的合并报表净利润是多少？",
+        "SQL": "SELECT NetProfit\nFROM AStockFinanceDB.LC_IncomeStatementAll\nWHERE CompanyCode = 1070\nAND InfoSource = '半年度报告'\nAND IfMerged = '1'\nAND IfAdjusted = 2\nAND date(InfoPublDate) BETWEEN '2021-01-01' AND '2021-12-31';",
+        "standart_question": "xx公司在xx年半年度报告中未调整的合并报表净利润是多少？"
+    },
+    {
+        "question": "水晶光电实施完成的员工持股计划有几个？",
+        "answer": 2,
+        "rewritten_question": "水晶光电实施完成的员工持股计划有几个？",
+        "SQL": "SELECT count(DISTINCT ID)\nFROM AStockShareholderDB.LC_ESOP\nWHERE InnerCode = 7094;",
+        "standart_question": "xx公司实施完成的员工持股计划有几个？"
+    },
+    {
+        "question": "最近一次完成的员工持股计划，股票规模上限和资金总额上限是多少",
+        "answer": "水晶光电最近一次完成的员工持股计划的股票规模上限是6040000.0股，资金总额上限是39984800.0 元。",
+        "rewritten_question": "水晶光电最近一次完成的员工持股计划的股票规模上限和资金总额上限分别是多少？",
+        "SQL": "SELECT ShareCelling, FundCelling, IniInfoPublDate\nFROM AStockShareholderDB.LC_ESOPSummary \nWHERE InnerCode = 7094\nORDER BY IniInfoPublDate DESC\nLIMIT 1;",
+        "standart_question": "xx公司最近一次完成的员工持股计划的股票规模上限和资金总额上限分别是多少？"
+    },
+    {
+        "question": "该计划是否是分期实施的？如果实施回答A，没有实施回答B",
+        "answer": "B",
+        "rewritten_question": "水晶光电最近一次完成的员工持股计划是否是分期实施的？如果实施回答A，没有实施回答B",
+        "SQL": "SELECT IfPeriod \nFROM AStockShareholderDB.LC_ESOPSummary \nWHERE InnerCode = 7094 AND Process = 1022",
+        "standart_question": "水晶光电最近一次完成的员工持股计划是否是分期实施的？如果实施回答A，没有实施回答B"
+    },
+    {
+        "question": "普洛药业在2020-11-25的最高价和最低价是多少？",
+        "answer": "普洛药业在2020-11-25的最高价是21.74，最低价是20.6。",
+        "rewritten_question": "普洛药业在2020-11-25的最高价和最低价是多少？",
+        "SQL": "SELECT HighPrice, LowPrice\nFROM AStockMarketQuotesDB.QT_StockPerformance\nWHERE InnerCode = 413 AND DATE(TradingDay) = '2020-11-25';",
+        "standart_question": "xx公司在xx时间的最高价和最低价是多少？"
+    },
+    {
+        "question": "当天换手率是多少,保留2位小数？",
+        "answer": "普洛药业在2020-11-25的换手率是1.02",
+        "rewritten_question": "普洛药业在2020-11-25的换手率是多少，保留2位小数？",
+        "SQL": "SELECT ROUND(TurnoverRate, 2) AS TurnoverRate\nFROM AStockMarketQuotesDB.QT_StockPerformance\nWHERE InnerCode = 413 AND DATE(TradingDay) = '2020-11-25';",
+        "standart_question": "xx公司在xx时间的换手率是多少，保留2位小数？"
+    },
+    {
+        "question": "年化夏普比率和波动率（日步长）是多少,保留2位小数？",
+        "answer": "普洛药业在2020-11-25的年化夏普比率为1.45，日步长波动率为0.03",
+        "rewritten_question": "普洛药业在2020-11-25的年化夏普比率和波动率（日步长）是多少，保留2位小数？",
+        "SQL": "SELECT ROUND(YearSharpeRatio, 2) AS YearSharpeRatio, ROUND(YearVolatilityByDay, 2) AS YearVolatilityByDay\nFROM AStockMarketQuotesDB.QT_StockPerformance\nWHERE InnerCode = 413 AND DATE(TradingDay) = '2020-11-25';",
+        "standart_question": "xx公司在xx时间的年化夏普比率和波动率（日步长）是多少，保留2位小数？"
+    },
+    {
+        "question": "建元信托股份有限公司十大股东的类型有哪些？",
+        "answer": "建元信托股份有限公司十大股东的类型包括：其他股东、国有股东、外资股东。",
+        "rewritten_question": "建元信托股份有限公司十大股东的类型有哪些？",
+        "SQL": "SELECT DISTINCT SHType\nFROM AStockShareholderDB.LC_MainSHListNew\nWHERE CompanyCode = 1749\nAND InfoTypeCode = 1\nLIMIT 10;",
+        "standart_question": "xx公司十大股东的类型有哪些？"
+    },
+    {
+        "question": "2020年年度报告中，该公司的最大股东是谁，他持有多少股份？",
+        "answer": "2020年年度报告中，建元信托股份有限公司的最大股东是上海国之杰投资发展有限公司，他持有2867929342.0股份。",
+        "rewritten_question": "2020年年度报告中，建元信托股份有限公司的最大股东是谁，他持有多少股份？",
+        "SQL": "SELECT SHList, HoldSum\nFROM AStockShareholderDB.LC_MainSHListNew\nWHERE CompanyCode = 1749\nAND InfoTypeCode = 1\nAND InfoSource = '年度报告'\nAND YEAR(InfoPublDate) = 2021\nORDER BY HoldSum DESC\nLIMIT 1;",
+        "standart_question": "xx年年度报告中，xx公司的最大股东是谁，他持有多少股份？"
+    },
+    {
+        "question": "2020年最后一个交易日是哪一天？用XXXX年XX月XX日回复我",
+        "answer": 44196,
+        "rewritten_question": "2020年最后一个交易日是哪一天？用XXXX年XX月XX日回复我",
+        "SQL": "SELECT MAX(TradingDate)\nFROM ConstantDB.QT_TradingDayNew\nWHERE YEAR(TradingDate) = '2020';",
+        "standart_question": "XX年最后一个交易日是哪一天？用XXXX年XX月XX日回复我"
+    },
+    {
+        "question": "鱼跃医疗在2020年末的总市值是多少元？",
+        "answer": "鱼跃医疗在2020年末（2020年12月31日）的总市值为28279874167.09元。",
+        "rewritten_question": "鱼跃医疗在2020年12月31日的总市值是多少元？",
+        "SQL": "SELECT Q.TotalMV\nFROM AStockMarketQuotesDB.QT_StockPerformance AS Q\nJOIN ConstantDB.SecuMain AS S ON Q.InnerCode = S.InnerCode\nWHERE S.ChiName = '江苏鱼跃医疗设备股份有限公司' AND DATE(Q.TradingDay) = '2020-12-31';",
+        "standart_question": "xx公司在xx时间的总市值是多少元？"
+    },
+    {
+        "question": "鱼跃医疗在2020年末回看近12个月成交金额是多少元？",
+        "answer": "根据查询结果，鱼跃医疗在2020年末回看近12个月的成交金额为280491510366.14元。",
+        "rewritten_question": "鱼跃医疗在2020年12月31日回看近12个月的成交金额是多少元？",
+        "SQL": "SELECT Q.TurnoverValueRY\nFROM AStockMarketQuotesDB.QT_StockPerformance AS Q\nJOIN ConstantDB.SecuMain AS S ON Q.InnerCode = S.InnerCode\nWHERE S.ChiName = '江苏鱼跃医疗设备股份有限公司' AND DATE(Q.TradingDay) = '2020-12-31';",
+        "standart_question": "xx公司在xx时间回看近12个月的成交金额是多少元？"
+    },
+    {
+        "question": "2019下半年，成交量创近一季度新高的证券数量最多的交易日是哪一天？",
+        "answer": 43816,
+        "rewritten_question": "2019下半年，成交量创近一季度新高的证券数量最多的交易日是哪一天？",
+        "SQL": "SELECT TradingDay, COUNT(DISTINCT InnerCode) AS NumOfSecurities\nFROM AStockMarketQuotesDB.CS_StockPatterns\nWHERE IfHighestTVRMThree = 1\nAND TradingDay >= '2019-07-01'\nAND TradingDay <= '2019-12-31'\nGROUP BY TradingDay\nORDER BY NumOfSecurities DESC\nLIMIT 1;",
+        "standart_question": "2019下半年，成交量创近一季度新高的证券数量最多的交易日是哪一天？"
+    },
+    {
+        "question": "那一天成交量创近一季度新高的证券数量有多少？",
+        "answer": "62个",
+        "rewritten_question": "2019年12月17日，成交量创近一季度新高的证券数量有多少？",
+        "SQL": "SELECT COUNT(DISTINCT InnerCode) AS NumOfSecurities\nFROM AStockMarketQuotesDB.CS_StockPatterns\nWHERE IfHighestTVRMThree = 1\nAND TradingDay = '2019-12-17';",
+        "standart_question": "xx时间，成交量创近一季度新高的证券数量有多少？"
+    },
+    {
+        "question": "那一天上涨和下跌的证券数量分别是？",
+        "answer": "上涨的证券数量是338，下跌的证券数量是70",
+        "rewritten_question": "2019年12月17日，上涨和下跌的证券数量分别是多少？",
+        "SQL": "SELECT \n    SUM(CASE WHEN ChangePCT >0 THEN 1 ELSE 0 END) AS UpSecurities,\n    SUM(CASE WHEN ChangePCT <0 THEN 1 ELSE 0 END) AS DownSecurities\nFROM \n    AStockMarketQuotesDB.QT_StockPerformance\nWHERE \n    DATE(TradingDay) = '2019-12-17';",
+        "standart_question": "xx时间，上涨和下跌的证券数量分别是多少？"
+    },
+    {
+        "question": "2020上半年共上市多少只基金？",
+        "answer": "2020年上半年共上市了10只基金。",
+        "rewritten_question": "2020上半年共上市多少只基金？",
+        "SQL": "SELECT COUNT(*) \nFROM PublicFundDB.MF_FundArchives \nWHERE YEAR(ListedDate) = '2020' AND MONTH(ListedDate) BETWEEN 1 AND 6;",
+        "standart_question": "xx时间上半年共上市多少只基金？"
+    },
+    {
+        "question": "博时基金公司成立于（XXXX年XX月XX日）？",
+        "answer": "博时基金公司成立于1998年7月13日。",
+        "rewritten_question": "博时基金公司成立于（XXXX年XX月XX日）？",
+        "SQL": "SELECT EstablishmentDate\nFROM PublicFundDB.MF_InvestAdvisorOutline\nWHERE InvestAdvisorCode = 41509;",
+        "standart_question": "博时基金公司成立于（XX时间）？"
+    },
+    {
+        "question": "比博时基金成立更早的基金公司(简称)有哪些？",
+        "answer": "比其成立更早的基金公司有华夏基金和南方基金。",
+        "rewritten_question": "博时基金公司成立于1998年7月13日，比其成立更早的基金公司(简称)有哪些？",
+        "SQL": "SELECT InvestAdvisorAbbrName\nFROM PublicFundDB.MF_InvestAdvisorOutline\nWHERE EstablishmentDate < '1998-07-13';",
+        "standart_question": "xx公司成立于xx时间，比其成立更早的基金公司(简称)有哪些？"
+    },
+    {
+        "question": "和博时基金属于同一地区的基金公司(简称)有哪些？",
+        "answer": "与其属于同一地区的基金公司有鹏华基金和南方基金。",
+        "rewritten_question": "博时基金公司成立于1998年7月13日，和其属于同一地区的基金公司(简称)有哪些？",
+        "SQL": "SELECT InvestAdvisorAbbrName\nFROM PublicFundDB.MF_InvestAdvisorOutline\nWHERE Region = (SELECT Region FROM PublicFundDB.MF_InvestAdvisorOutline WHERE InvestAdvisorCode = 41509)\nAND InvestAdvisorCode != 41509;",
+        "standart_question": "xx公司成立于xx时间，和其属于同一地区的基金公司(简称)有哪些？"
+    },
+    {
+        "question": "最新更新的2021年度报告中，机构持有无限售流通A股数量合计最多的公司简称是？",
+        "answer": "公司简称 帝尔激光",
+        "rewritten_question": "最新更新的2021年度报告中，机构持有无限售流通A股数量合计最多的公司简称是？",
+        "SQL": "SELECT B.ChiName, B.ChiNameAbbr\nFROM AStockShareholderDB.LC_StockHoldingSt A\nJOIN ConstantDB.SecuMain B\nON A.CompanyCode = B.CompanyCode\nWHERE date(EndDate) = '2021-12-31'\nAND UpdateTime = (\n    SELECT MAX(UpdateTime)\n    FROM AStockShareholderDB.LC_StockHoldingSt\n    WHERE date(EndDate) = '2021-12-31'\n  )\nORDER BY InstitutionsHoldings DESC\nLIMIT 1",
+        "standart_question": "最新更新的xx年度报告中，机构持有无限售流通A股数量合计最多的公司简称是？"
+    },
+    {
+        "question": "在这份报告中，该公司机构持有无限售流通A股比例合计是多少，保留2位小数？",
+        "answer": "机构持有无限售流通A股比例合计(%) 10.1309",
+        "rewritten_question": "最新更新的2021年度报告中，帝尔激光机构持有无限售流通A股比例合计是多少，保留2位小数？",
+        "SQL": "SELECT ROUND(SH.InstitutionsHoldProp, 2) AS InstitutionsHoldProp\nFROM AStockShareholderDB.LC_StockHoldingSt AS SH\nWHERE CompanyCode = 222664\nAND SH.InfoSource = '年度报告'\nAND YEAR(SH.EndDate) = '2021'",
+        "standart_question": "最新更新的xx年度报告中，xx公司机构持有无限售流通A股比例合计是多少，保留2位小数？"
+    },
+    {
+        "question": "该公司前十大股东持股比例合计是多少？",
+        "answer": "Top10StockholdersProp 64.51",
+        "rewritten_question": "最新更新的2021年度报告中，帝尔激光前十大股东持股比例合计是多少？",
+        "SQL": "SELECT SH.Top10StockholdersProp\nFROM AStockShareholderDB.LC_StockHoldingSt AS SH\nWHERE CompanyCode = 222664\nAND SH.InfoSource = '年度报告'\nAND YEAR(SH.EndDate) = '2021'",
+        "standart_question": "最新更新的xx年度报告中，xx公司前十大股东持股比例合计是多少？"
+    },
+    {
+        "question": "安琪酵母在2020年全年的最高收盘价是多少，出现在哪一天（XXXX年XX月XX日）？",
+        "answer": "安琪酵母在2020年全年的最高收盘价是70.1，出现在2020年8月21日。",
+        "rewritten_question": "安琪酵母在2020年全年的最高收盘价是多少，出现在哪一天（XXXX年XX月XX日）？",
+        "SQL": "SELECT MAX(ClosePrice) AS MaxClosePrice, TradingDay\nFROM AStockMarketQuotesDB.QT_StockPerformance\nWHERE InnerCode = 1421 AND YEAR(TradingDay) = '2020'\nGROUP BY TradingDay\nORDER BY MaxClosePrice DESC",
+        "standart_question": "xx公司在xx年全年的最高收盘价是多少，出现在哪一天（XX年XX月XX日）？"
+    },
+    {
+        "question": "当天成交量是否创近一月以来新高？",
+        "answer": "否",
+        "rewritten_question": "安琪酵母在2020年8月21日的成交量是否创近一个月以来新高？",
+        "SQL": "SELECT IfHighestTVolumeRM\nFROM AStockMarketQuotesDB.CS_StockPatterns\nWHERE InnerCode = 1421 AND DATE(TradingDay) = '2020-08-21';",
+        "standart_question": "xx公司在xx时间的成交量是否创近一个月以来新高？"
+    },
+    {
+        "question": "厦门钨业在2019年全年的最低收盘价是多少，出现在哪一天，XXXX年XX月XX日？",
+        "answer": "厦门钨业在2019年全年的最低收盘价是11.78，出现在2019年01月31日。",
+        "rewritten_question": "厦门钨业在2019年全年的最低收盘价是多少，出现在哪一天，XXXX年XX月XX日？",
+        "SQL": "SELECT MIN(ClosePrice) AS MinClosePrice, TradingDay\nFROM AStockMarketQuotesDB.QT_StockPerformance\nWHERE InnerCode = 1720 AND YEAR(TradingDay) = '2019'\nGROUP BY TradingDay\nORDER BY MinClosePrice ASC\nLIMIT 1",
+        "standart_question": "xx公司在xx年全年的最低收盘价是多少，出现在哪一天，XXXX年XX月XX日？"
+    },
+    {
+        "question": "厦门钨业在当天的VRSI量相对强弱是多少，保留4位小数？",
+        "answer": "39.4198, 47.3474",
+        "rewritten_question": "厦门钨业在2019年1月31日的VRSI量相对强弱是多少，保留4位小数？",
+        "SQL": "SELECT VRSI\nFROM AStockMarketQuotesDB.CS_TurnoverVolTecIndex\nWHERE InnerCode = 1720 AND DATE(TradingDay) = '2019-01-31'",
+        "standart_question": "xx公司在xx时间的VRSI量相对强弱是多少，保留4位小数？"
+    },
+    {
+        "question": "厦门钨业已连跌几天？",
+        "answer": "6天",
+        "rewritten_question": "厦门钨业在2019年1月31日之前已连跌几天？",
+        "SQL": "SELECT FallingDownDays\nFROM AStockMarketQuotesDB.CS_StockPatterns\nWHERE InnerCode = 1720 AND DATE(TradingDay) = '2019-01-31'",
+        "standart_question": "xx公司在xx时间之前已连跌几天？"
+    },
+    {
+        "question": "厦门钨业在当天的VRSI量相对强弱是多少，保留4位小数？",
+        "answer": "54.4358, 19.89整理后:54.4358",
+        "rewritten_question": "厦门钨业在2021年1月15日的VRSI量相对强弱是多少，保留4位小数？",
+        "SQL": "SELECT VRSI\nFROM AStockMarketQuotesDB.CS_TurnoverVolTecIndex\nWHERE InnerCode = 1720 AND DATE(TradingDay) = '2021-01-15';",
+        "standart_question": "xx公司在xx时间的VRSI量相对强弱是多少，保留4位小数？"
+    },
+    {
+        "question": "芯片概念概念板块属于什么2级概念？",
+        "answer": "制造2025",
+        "rewritten_question": "芯片概念概念板块属于什么2级概念？",
+        "SQL": "SELECT SubclassName\nFROM AStockIndustryDB.LC_ConceptList\nWHERE ConceptName = '芯片概念';",
+        "standart_question": "芯片概念概念板块属于什么2级概念？"
+    },
+    {
+        "question": "截止2023年末,该2级概念下一共有几个未终止的概念板块？",
+        "answer": 88,
+        "rewritten_question": "截止2023年末，“制造2025”这一2级概念下共有多少个未终止的概念板块？",
+        "SQL": "SELECT COUNT(DISTINCT LC_ConceptList.ConceptCode)\nFROM AStockIndustryDB.LC_ConceptList\nLEFT JOIN AStockIndustryDB.LC_COConcept ON LC_ConceptList.ConceptCode = LC_COConcept.ConceptCode\nWHERE LC_ConceptList.SubclassName = '制造2025'\nAND (LC_COConcept.OutDate IS NULL OR LC_COConcept.OutDate > '2023-12-31');",
+        "standart_question": "截止xx年末，“xx”这一2级概念下共有多少个未终止的概念板块？"
+    },
+    {
+        "question": "芯片概念概念板块的英文名称是什么？",
+        "answer": "Chip Localization",
+        "rewritten_question": "芯片概念概念板块的英文名称是什么？",
+        "SQL": "SELECT ConceptEngName\nFROM AStockIndustryDB.LC_ConceptList\nWHERE ConceptName = '芯片概念';",
+        "standart_question": "芯片概念概念板块的英文名称是什么？"
+    },
+    {
+        "question": "按2021年末新版申万行业分类，现在杰瑞股份属于什么申万二级行业？",
+        "answer": "根据2021年末新版申万行业分类，杰瑞股份目前属于'专用设备'这一申万二级行业。",
+        "rewritten_question": "按2021年末新版申万行业分类，现在杰瑞股份属于什么申万二级行业？",
+        "SQL": "SELECT SecondIndustryName\nFROM AStockIndustryDB.LC_ExgIndustry\nWHERE CompanyCode = 78143\nAND Standard = '38'",
+        "standart_question": "按xx年末新版申万行业分类，现在xx公司属于什么申万二级行业？"
+    },
+    {
+        "question": "2021年末，该申万二级行业中有几个股票？",
+        "answer": 131,
+        "rewritten_question": "按2021年末新版申万行业分类，专用设备行业中有多少个股票？",
+        "SQL": "SELECT count(distinct CompanyCode) as 专用设备_2021\nFROM AStockIndustryDB.LC_ExgIndustry\nWHERE SecondIndustryName = '专用设备' AND year(InfoPublDate) = 2021",
+        "standart_question": "按xx年末新版申万行业分类，专用设备行业中有多少个股票？"
+    },
+    {
+        "question": "2021年末，按新版申万行业分类，现在均胜电子属于什么申万一级行业？",
+        "answer": "2021年末均胜电子所属申万一级行业 汽车",
+        "rewritten_question": "2021年末，按新版申万行业分类，现在均胜电子属于什么申万一级行业？",
+        "SQL": "SELECT FirstIndustryName\nFROM AStockIndustryDB.LC_ExgIndustry\nJOIN ConstantDB.SecuMain ON LC_ExgIndustry.CompanyCode = SecuMain.CompanyCode\nWHERE SecuMain.ChiName = '宁波均胜电子股份有限公司' AND LC_ExgIndustry.Standard = '38-申万行业分类(新)' AND LC_ExgIndustry.InfoPublDate <= '2021-12-31'\nORDER BY LC_ExgIndustry.InfoPublDate DESC\nLIMIT 1;",
+        "standart_question": "xx年末，按新版申万行业分类，现在xx公司属于什么申万一级行业？"
+    },
+    {
+        "question": "2021年末，该一级行业中有几个股票？",
+        "answer": "2021年末申万一级行业汽车中的股票数量 214",
+        "rewritten_question": "2021年末，按新版申万行业分类，汽车行业中有多少个股票？",
+        "SQL": "SELECT count(distinct CompanyCode)\nFROM AStockIndustryDB.LC_ExgIndustry\nwhere FirstIndustryName = '汽车' \nAND year(InfoPublDate) = 2021 \nAND IfPerformed = 1",
+        "standart_question": "xx年末，按新版申万行业分类，汽车行业中有多少个股票？"
+    },
+    {
+        "question": "2020-07-02风电零部件行业的总市值是多少(元)？",
+        "answer": "2020年7月2日，风电零部件行业的总市值为49944854444.22元。",
+        "rewritten_question": "2020-07-02风电零部件行业的总市值是多少(元)？",
+        "SQL": "SELECT TotalMV AS TotalMarketValue\nFROM AStockIndustryDB.LC_IndustryValuation\nWHERE IndustryName = '风电零部件'\nAND date(TradingDay) = '2020-07-02';",
+        "standart_question": "xx时间风电零部件行业的总市值是多少(元)？"
+    },
+    {
+        "question": "其中A股流通市值是多少（元）？",
+        "answer": "A股流通市值为42982237434.43元。",
+        "rewritten_question": "2020-07-02风电零部件行业A股流通市值是多少（元）？",
+        "SQL": "SELECT NegotiableMV\nFROM AStockIndustryDB.LC_IndustryValuation\nWHERE IndustryName = '风电零部件'\nAND date(TradingDay) = '2020-07-02';",
+        "standart_question": "xx时间风电零部件行业A股流通市值是多少（元）？"
+    },
+    {
+        "question": "下一个交易日的A股流通市值是多少（元）？",
+        "answer": "2020年7月3日，风电零部件行业的A股流通市值为43239987971.4元。",
+        "rewritten_question": "2020-07-03风电零部件行业的A股流通市值是多少（元）？",
+        "SQL": "SELECT NegotiableMV\nFROM AStockIndustryDB.LC_IndustryValuation\nWHERE IndustryName = '风电零部件'\nAND date(TradingDay) = '2020-07-03';",
+        "standart_question": "xx时间风电零部件行业的A股流通市值是多少（元）？"
+    },
+    {
+        "question": "软通动力在2019年报酬总额和领取报酬的管理层人数是多少？",
+        "answer": "软通动力在2019年的报酬总额为15802300.0元，领取报酬的管理层人数为11人。",
+        "rewritten_question": "软通动力在2019年报酬总额和领取报酬的管理层人数是多少？",
+        "SQL": "SELECT TotalYearPay, NumPayManagers\nFROM AStockOperationsDB.LC_RewardStat\nWHERE CompanyCode = 613963 AND YEAR(EndDate) = '2019'",
+        "standart_question": "xx公司在xx年报酬总额和领取报酬的管理层人数是多少？"
+    },
+    {
+        "question": "天弘增利短债C的基金管理人是谁？",
+        "answer": "天弘基金管理有限公司",
+        "rewritten_question": "天弘增利短债C的基金管理人是谁？",
+        "SQL": "SELECT DisclName,InfoPublDate,InnerCode, IfEffected\nFROM PublicFundDB.MF_FundProdName\nWHERE DisclName = '天弘增利短债C'\n\nSELECT InvestAdvisorName\nFROM PublicFundDB.MF_FundArchives A\nJOIN PublicFundDB.MF_InvestAdvisorOutline B\nON A.InvestAdvisorCode = B.InvestAdvisorCode\nWHERE A.InnerCode = 283029",
+        "standart_question": "天弘增利短债C的基金管理人是谁？"
+    },
+    {
+        "question": "该基金的运作方式是什么？",
+        "answer": "开放式",
+        "rewritten_question": "天弘增利短债C的基金运作方式是什么？",
+        "SQL": "SELECT InvestAdvisorName, type, InvestStyle\nFROM PublicFundDB.MF_FundArchives A\nJOIN PublicFundDB.MF_InvestAdvisorOutline B\nON A.InvestAdvisorCode = B.InvestAdvisorCode\nWHERE A.InnerCode = 283029",
+        "standart_question": "天弘增利短债C的基金运作方式是什么？"
+    },
+    {
+        "question": "该基金的投资风格是什么？",
+        "answer": "纯债型",
+        "rewritten_question": "天弘增利短债C的投资风格是什么？",
+        "SQL": "SELECT MF_FundArchives.InvestStyle\nFROM PublicFundDB.MF_FundArchives\nWHERE MF_FundArchives.InnerCode = 283029;",
+        "standart_question": "天弘增利短债C的投资风格是什么？"
+    },
+    {
+        "question": "截止至中国软件2021年Q4季度，研发投入总额是多少？（调整后的合并报表）",
+        "answer": "1895164217.8元",
+        "rewritten_question": "截止至中国软件2021年Q4季度，研发投入总额是多少？(未调整的合并报表)",
+        "SQL": "SELECT TotalRDInput\nFROM AStockFinanceDB.LC_IntAssetsDetail\nWHERE CompanyCode = 1475\nAND IfMerged = 1\nAND IfAdjusted = 2\nAND YEAR(EndDate) = 2021\nAND MONTH(EndDate) = 12",
+        "standart_question": "截止至xx公司xx年Q4季度，研发投入总额是多少？(未调整的合并报表)"
+    },
+    {
+        "question": "截止至中国软件2021年Q4季度，研发投入占营业收入比例是多少？",
+        "answer": "是18.31%",
+        "rewritten_question": "截止至中国软件2021年Q4季度，研发投入占营业收入的比例是多少？",
+        "SQL": "SELECT RDInputRatio\nFROM AStockFinanceDB.LC_IntAssetsDetail\nWHERE CompanyCode = 1475\nAND IfMerged = 1\nAND YEAR(EndDate) = 2021\nAND MONTH(EndDate) = 12",
+        "standart_question": "截止至xx公司xx年Q4季度，研发投入占营业收入的比例是多少？"
+    },
+    {
+        "question": "请根据中国软件截止至2021年Q4季度的研发人员数量和占比推算公司总人数（计算方式：总人数 = 研发人员数量 ÷ (研发人员占比 ÷ 100)，结果取整）。",
+        "answer": "是11892人。",
+        "rewritten_question": "截止至中国软件2021年Q4季度，请根据研发人员数量和占比推算公司总人数（计算方式：总人数 = 研发人员数量 ÷ (研发人员占比 ÷ 100)，结果取整）。",
+        "SQL": "SELECT \n    ROUND(LC_Staff.EmployeeSum / (LC_IntAssetsDetail.RDStaffNumRatio / 100)) AS TotalStaffNum\nFROM \n    AStockOperationsDB.LC_Staff\nJOIN \n    AStockFinanceDB.LC_IntAssetsDetail\nON \n    LC_Staff.CompanyCode = LC_IntAssetsDetail.CompanyCode\n    AND LC_Staff.EndDate = LC_IntAssetsDetail.EndDate\nWHERE \n    LC_Staff.CompanyCode = 1475 \n    AND LC_Staff.TypeCode = 3037\n    AND YEAR(LC_Staff.EndDate) = 2021 \n    AND MONTH(LC_Staff.EndDate) = 12;",
+        "standart_question": "截止至xx公司xx年Q4季度，请根据研发人员数量和占比推算公司总人数（计算方式：总人数 = 研发人员数量 ÷ (研发人员占比 ÷ 100)，结果取整）。"
+    },
+    {
+        "question": "陆家嘴在2019年的最大借贷金额是多少？",
+        "answer": "陆家嘴在2019年的最大借贷金额是12000000000.0元。",
+        "rewritten_question": "陆家嘴在2019年的最大借贷金额是多少？",
+        "SQL": "SELECT MAX(LatestLoanSum) AS MaxLoanAmount\nFROM AStockEventsDB.LC_Credit\nWHERE CompanyCode = 1596 AND YEAR(InfoPublDate) = '2019';",
+        "standart_question": "xx公司在xx年的最大借贷金额是多少？"
+    },
+    {
+        "question": "陆家嘴在2019年的单次首次借贷金额最高的借款方是谁？其单次首次借贷金额是多少？",
+        "answer": "2019年陆家嘴单次首次借贷金额最高的借款方是“本公司”，其单次首次借贷金额为12000000000.0元。",
+        "rewritten_question": "陆家嘴在2019年的单次首次借贷金额最高的借款方是谁？其单次首次借贷金额是多少？",
+        "SQL": "SELECT Borrower, FirstLoanSum\nFROM AStockEventsDB.LC_Credit\nWHERE CompanyCode = 1596 AND YEAR(InfoPublDate) = '2019'\nORDER BY FirstLoanSum DESC\nLIMIT 1;",
+        "standart_question": "xx公司在xx年的单次首次借贷金额最高的借款方是谁？其单次首次借贷金额是多少？"
+    },
+    {
+        "question": "亿帆医药在2020年的最大担保金额是多少？",
+        "answer": "亿帆医药在2020年的最大担保金额是316000000.0元。",
+        "rewritten_question": "亿帆医药在2020年的最大担保金额是多少？",
+        "SQL": "SELECT MAX(LatestGuaranteeSum) AS MaxGuaranteeAmount\nFROM AStockEventsDB.LC_Warrant\nWHERE CompanyCode = 2344 AND YEAR(InfoPublDate) = '2020';",
+        "standart_question": "xx公司在xx年的最大担保金额是多少？"
+    },
+    {
+        "question": "亿帆医药在2020年的最大担保金额涉及的担保方是谁？担保金额是多少？",
+        "answer": "亿帆医药在2020年的最大担保金额涉及的担保方是合肥亿帆生物医药有限公司，担保金额为316000000.0元。",
+        "rewritten_question": "亿帆医药在2020年的最大担保金额316000000.0元涉及的担保方是谁？担保金额是多少？",
+        "SQL": "SELECT GuarantorCompany, LatestGuaranteeSum\nFROM AStockEventsDB.LC_Warrant\nWHERE CompanyCode = 2344 AND YEAR(InfoPublDate) = '2020' AND LatestGuaranteeSum = 316000000.0;",
+        "standart_question": "xx公司在xx年的最大担保金额316000000.0元涉及的担保方是谁？担保金额是多少？"
+    },
+    {
+        "question": "利亚德的证券代码和ISIN代码是什么？",
+        "answer": "利亚德的证券代码是300296，ISIN代码是CNE100001CB7。",
+        "rewritten_question": "利亚德的证券代码和ISIN代码是什么？",
+        "SQL": "SELECT SecuCode, ISIN \nFROM ConstantDB.SecuMain WHERE ChiName = '利亚德光电股份有限公司';",
+        "standart_question": "xx公司的证券代码和ISIN代码是什么？"
+    },
+    {
+        "question": "该公司最新的证监会行业代码是多少？该行业下有多少家上市公司？",
+        "answer": "利亚德最新的证监会行业代码是13039，该行业下有116家上市公司。",
+        "rewritten_question": "利亚德最新的证监会行业代码是多少？该行业下有多少家上市公司？",
+        "SQL": "SELECT CSRCInduCategory\nFROM AStockBasicInfoDB.LC_Business \nWHERE CompanyCode = 169848;\n-----\nSELECT COUNT(*) \nFROM AStockBasicInfoDB.LC_Business \nWHERE CSRCInduCategory = '13039';",
+        "standart_question": "xx公司最新的证监会行业代码是多少？该行业下有多少家上市公司？"
+    },
+    {
+        "question": "中国宝安2021年底的员工总数是多少？其中技术人员占比是多少？（保留2位小数）",
+        "answer": "14335人，技术人员占比23.19%",
+        "rewritten_question": "中国宝安2021年底的员工总数是多少？其中技术人员占比是多少？（保留2位小数）",
+        "SQL": "##看2021年总人数的数量\nSELECT EmployeeSum\nFROM AStockOperationsDB.LC_Staff\nWHERE LC_Staff.CompanyCode = 25 \nAND LC_Staff.ClassfiedMethod = '9000' \nAND YEAR(LC_Staff.EndDate) = '2021'\nAND MergeMark = 1\n\n## 看技术人员数量\nSELECT EmployeeSum\nFROM AStockOperationsDB.LC_Staff\nWHERE LC_Staff.CompanyCode = 25 \nAND YEAR(LC_Staff.EndDate) = '2021'\nAND TypeCode = 3035\nAND MergeMark = 1",
+        "standart_question": "xx公司xx年底的员工总数是多少？其中技术人员占比是多少？（保留2位小数）"
+    },
+    {
+        "question": "在该公司的技术人员中，具有硕士及以上学历（硕士+博士）的人员占比是多少？（保留2位小数）",
+        "answer": "占比17.59%",
+        "rewritten_question": "中国宝安2021年底的技术人员中，具有硕士及以上学历（硕士+博士）的人员占比是多少？（保留2位小数）",
+        "SQL": "## 看技术人员数量\nSELECT EmployeeSum\nFROM AStockOperationsDB.LC_Staff\nWHERE LC_Staff.CompanyCode = 25 \nAND YEAR(LC_Staff.EndDate) = '2021'\nAND TypeCode = 3035\nAND MergeMark = 1\n\n### 硕士及以上人员数量\nSELECT SUM(EmployeeSum)\nFROM AStockOperationsDB.LC_Staff\nWHERE LC_Staff.CompanyCode = 25 \nAND LC_Staff.TypeCode IN ('5015', '5010')\nAND YEAR(LC_Staff.EndDate) = '2021'",
+        "standart_question": "xx公司xx年底的技术人员中，具有硕士及以上学历（硕士+博士）的人员占比是多少？（保留2位小数）"
+    },
+    {
+        "question": "该公司的人才结构是否合理？请分析技术人员、生产人员、销售人员的比例构成。",
+        "answer": "技术人员占比23.19%\n生产人员占比35.07%\n销售人员占比12.79%",
+        "rewritten_question": "中国宝安2021年底的人才结构是否合理？请分析技术人员、生产人员、销售人员的比例构成。",
+        "SQL": "SELECT \n    SUM(CASE WHEN LC_Staff.TypeCode = '3035' THEN LC_Staff.EmployeeSum ELSE 0 END) AS 技术人员总数,\n    SUM(CASE WHEN LC_Staff.TypeCode = '3031' THEN LC_Staff.EmployeeSum ELSE 0 END) AS 生产人员总数,\n    SUM(CASE WHEN LC_Staff.TypeCode = '3034' THEN LC_Staff.EmployeeSum ELSE 0 END) AS 销售人员总数,\n    SUM(CASE WHEN LC_Staff.ClassfiedMethod = '9000'  THEN LC_Staff.EmployeeSum ELSE 0 END) AS 员工总数\nFROM \n    AStockOperationsDB.LC_Staff\nWHERE \n    LC_Staff.CompanyCode = 25 \n    AND YEAR(LC_Staff.EndDate) = '2021'\n    AND MergeMark = 1",
+        "standart_question": "xx公司xx年底的人才结构是否合理？请分析技术人员、生产人员、销售人员的比例构成。"
+    },
+    {
+        "question": "永泰能源在2020年发生了几次业务范围变更？请列出每次变更的具体日期（xxxx-xx-xx的格式）",
+        "answer": "永泰能源在2020年发生了3次业务范围变更，具体日期分别为2020-03-10、2020-04-14和2020-08-29。",
+        "rewritten_question": "永泰能源在2020年发生了几次业务范围变更？请列出每次变更的具体日期（xxxx-xx-xx的格式）",
+        "SQL": "SELECT  InfoPublDate, IfPassed\nFROM AStockBasicInfoDB.LC_Business\nWHERE CompanyCode = 1159 AND YEAR(InfoPublDate) = '2020'\nORDER BY InfoPublDate;",
+        "standart_question": "xx公司在xx年发生了几次业务范围变更？请列出每次变更的具体日期（xxxx-xx-xx的格式）"
+    },
+    {
+        "question": "鹏华基金在2019年成立了多少只基金？这些基金的总募集规模是多少？(单位：元)",
+        "answer": "鹏华基金在2019年成立了18只基金，这些基金的总募集规模是38492567267.17元",
+        "rewritten_question": "鹏华基金在2019年成立了多少只基金？这些基金的总募集规模是多少？(单位：元)",
+        "SQL": "SELECT COUNT(*) AS FundCount, SUM(FoundedSize) AS TotalFoundedSize\nFROM PublicFundDB.MF_FundArchives\nWHERE InvestAdvisorCode = 41515 AND YEAR(EstablishmentDate) = '2019';",
+        "standart_question": "xx公司在xx年成立了多少只基金？这些基金的总募集规模是多少？(单位：元)"
+    },
+    {
+        "question": "在上述成立的基金中，有多少只是股票型基金？这些股票型基金的平均募集规模是多少？(单位：元)",
+        "answer": "鹏华基金在2019年成立的18只基金中，有4只是股票型基金，这些股票型基金的平均募集规模是899996370.56元",
+        "rewritten_question": "鹏华基金在2019年成立的18只基金中，有多少只是股票型基金？这些股票型基金的平均募集规模是多少？(单位：元)",
+        "SQL": "SELECT COUNT(*) AS StockFundCount, AVG(FoundedSize) AS AvgFoundedSize\nFROM PublicFundDB.MF_FundArchives\nWHERE InvestAdvisorCode = 41515 AND YEAR(EstablishmentDate) = '2019' AND FundTypeCode = '1101';",
+        "standart_question": "xx公司在xx年成立的18只基金中，有多少只是股票型基金？这些股票型基金的平均募集规模是多少？(单位：元)"
+    },
+    {
+        "question": "安琪酵母在2021年12月31日的股东总户数是多少？其中A股股东户均持股数是多少股？",
+        "answer": "股东总户数是50743户，其中A股股东户均持股数是16413.32股。",
+        "rewritten_question": "安琪酵母在2021年12月31日的股东总户数是多少？其中A股股东户均持股数是多少股？",
+        "SQL": "SELECT SHNum, AAverageHoldSum\nFROM AStockShareholderDB.LC_SHNumber\nWHERE CompanyCode = 1288 AND DATE(EndDate) = '2021-12-31';",
+        "standart_question": "xx公司在xx时间的股东总户数是多少？其中A股股东户均持股数是多少股？"
+    },
+    {
+        "question": "伟明环保最近一期员工持股计划的参与总人数是多少？其中管理层参与人数占比(四舍五入精确到小数点后两位，并以百分比形式表示)是多少？",
+        "answer": "伟明环保最近一期员工持股计划的参与总人数是152人，其中管理层参与人数占比为9.87%",
+        "rewritten_question": "伟明环保最近一期员工持股计划的参与总人数是多少？其中管理层参与人数占比(四舍五入精确到小数点后两位，并以百分比形式表示)是多少？",
+        "SQL": "SELECT PartiAmount, ROUND((ManagementPartiAmount / PartiAmount) * 100, 2) AS ManagementRatio, ImpleEndDate, IniInfoPublDate\nFROM AStockShareholderDB.LC_ESOP\nWHERE InnerCode = 36006\nORDER BY IniInfoPublDate DESC\nLIMIT 1;",
+        "standart_question": "xx公司最近一期员工持股计划的参与总人数是多少？其中管理层参与人数占比(四舍五入精确到小数点后两位，并以百分比形式表示)是多少？"
+    },
+    {
+        "question": "光环新网(代码:300383)的年度报告中在2021年年末的机构持股比例是多少(四舍五入精确到小数点后两位，并以百分比形式表示)？其中基金持股比例是多少(四舍五入精确到小数点后两位，并以百分比形式表示)？",
+        "answer": "光环新网(代码:300383)在2021年年末的机构持股比例为40.99%，基金持股比例为2.96%。",
+        "rewritten_question": "光环新网(代码:300383)的年度报告中在2021年年末的机构持股比例是多少(四舍五入精确到小数点后两位，并以百分比形式表示)？其中基金持股比例是多少(四舍五入精确到小数点后两位，并以百分比形式表示)？",
+        "SQL": "SELECT ROUND(InstitutionsHoldPropA, 2) AS `机构持股比例(%)`,\n                ROUND(FundsHoldPropA, 2) AS `基金持股比例(%)`\nFROM AStockShareholderDB.LC_StockHoldingSt\nWHERE CompanyCode = 170593\nAND DATE(EndDate) = '2021-12-31'\nAND InfoSource = '年度报告'",
+        "standart_question": "xx公司(代码:xx股票)的年度报告中在xx年年末的机构持股比例是多少(四舍五入精确到小数点后两位，并以百分比形式表示)？其中基金持股比例是多少(四舍五入精确到小数点后两位，并以百分比形式表示)？"
+    },
+    {
+        "question": "九州通在2020-2021年间实施了几次分红方案？每次分红的合计派现金额（四舍五入保留两位小数，单位元）和实施公告日期（xxxx-xx-xx的格式）分别是多少？",
+        "answer": "九州通在2020-2021年间实施了2次分红方案，第一次分红的合计派现金额为914373290.00元，实施公告日期为2021-06-08。第二次金额548620782.90，日期2022-06-07",
+        "rewritten_question": "九州通在2020-2021年间实施了几次分红方案？每次分红的合计派现金额（四舍五入保留两位小数，单位元）和实施公告日期（xxxx-xx-xx的格式）分别是多少？",
+        "SQL": "SELECT \n       TotalCashDiviComRMB,\n       DATE_FORMAT(DividendImplementDate, '%Y-%m-%d') AS 实施公告日期\nFROM AStockFinanceDB.LC_Dividend\nWHERE InnerCode = 11515\nAND YEAR(EndDate) BETWEEN 2020 AND 2021\nAND IfDividend = 1",
+        "standart_question": "xx公司在xx年间实施了几次分红方案？每次分红的合计派现金额（四舍五入保留两位小数，单位元）和实施公告日期（xxxx-xx-xx的格式）分别是多少？"
+    },
+    {
+        "question": "从公司年报中，在2020-2021年间，该公司的机构持无限售流通A股比例是是否增长(输出是/否)，请列出具体数据，保留4位小数。",
+        "answer": "九州通在2020年的机构持有无限售流通A股比例为67.8758%，在2021年的比例为66.8755%。否",
+        "rewritten_question": "九州通在2020-2021年间，机构持有无限售流通A股比例是否增长（输出是/否），请列出具体数据，保留4位小数。",
+        "SQL": "SELECT \n    ROUND(InstitutionsHoldProp, 4) AS 机构持有无限售流通A股比例,\n    YEAR(EndDate) AS 年份\nFROM \n    AStockShareholderDB.LC_StockHoldingSt\nWHERE \n    InnerCode = 11515\n    AND InfoSource = '年度报告'\n    AND YEAR(EndDate) BETWEEN 2020 AND 2021\nORDER BY \n    YEAR(EndDate);",
+        "standart_question": "xx公司在xx年间，机构持有无限售流通A股比例是否增长（输出是/否），请列出具体数据，保留4位小数。"
+    },
+    {
+        "question": "华夏鼎康债券A在2019年的分红次数是多少？每次分红的派现比例是多少？",
+        "answer": "华夏鼎康债券A在2019年的分红次数是2次。每次分红的派现比例分别是0.1和0.05。",
+        "rewritten_question": "华夏鼎康债券A在2019年的分红次数是多少？每次分红的派现比例是多少？",
+        "SQL": "SELECT COUNT(*) AS DividendTimes, DividendRatioBeforeTax\nFROM PublicFundDB.MF_Dividend\nWHERE InnerCode = 210208 AND YEAR(EndDate) = '2019'\nGROUP BY DividendRatioBeforeTax;",
+        "standart_question": "xx股票在xx年的分红次数是多少？每次分红的派现比例是多少？"
+    },
+    {
+        "question": "基于上述分红数据，在2019年最后一次分红时，如果一位投资者持有1000份该基金，税后可以获得多少分红收益？",
+        "answer": "根据查询结果，2019年最后一次分红的税后实际分配比例为0.05。如果投资者持有1000份该基金，税后分红收益为1000 * 0.05 = 50元。",
+        "rewritten_question": "华夏鼎康债券A在2019年最后一次分红时，如果一位投资者持有1000份该基金，税后可以获得多少分红收益？",
+        "SQL": "SELECT ActualRatioAfterTax\nFROM PublicFundDB.MF_Dividend\nWHERE InnerCode = 210208 AND YEAR(EndDate) = '2019'\nORDER BY EndDate DESC\nLIMIT 1;",
+        "standart_question": "xx基金在xx年最后一次分红时，如果一位投资者持有1000份该基金，税后可以获得多少分红收益？"
+    },
+    {
+        "question": "华峰化学在2019年发生了哪些舆情事件？请列出事件发生时间(YYYY-MM-DD)、事件名称和情感方向。",
+        "answer": "华峰化学在2019年发生的舆情事件如下：\n1. 2019-09-30：停牌，情感方向为中性\n2. 2019-08-06：合同/中标，情感方向为负面\n3. 2019-04-01：出售资产，情感方向为中性\n4. 2019-09-29：出售资产，情感方向为中性\n5. 2019-07-12：监管问询，情感方向为负面",
+        "rewritten_question": "华峰化学在2019年发生了哪些舆情事件？请列出事件发生时间(YYYY-MM-DD)、事件名称和情感方向。",
+        "SQL": "SELECT EventDate, EventName, EmotionDirection\nFROM InstitutionDB.PS_NewsSecurity\nWHERE CompanyCode = 3754 AND YEAR(EventDate) = '2019';",
+        "standart_question": "xx公司在xx年发生了哪些舆情事件？请列出事件发生时间(YYYY-MM-DD)、事件名称和情感方向。"
+    },
+    {
+        "question": "在上述最大比例质押发生时，该公司的短期借款余额是多少？(保留两位小数)",
+        "answer": "余额是2744399870.37",
+        "rewritten_question": "美年健康在2019年最大比例质押发生时，该公司的短期借款余额是多少？(保留两位小数)",
+        "SQL": "SELECT ShortTermLoan, EndDate, IfAdjusted, IfMerged\nFROM AStockFinanceDB.LC_BalanceSheetAll\nWHERE CompanyCode = 2730\nAND DATE(ENDDATE) < '2019-12-09'",
+        "standart_question": "xx公司在xx年最大比例质押发生时，该公司的短期借款余额是多少？(保留两位小数)"
+    }
+]
